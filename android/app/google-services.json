@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "263365595629",
+    "project_id": "mobile-app-7dabb",
+    "storage_bucket": "mobile-app-7dabb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263365595629:android:951d8bffdeca3009f2d7e4",
+        "android_client_info": {
+          "package_name": "com.chamuditha.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSOkbt-g6INW7cb_6TbafWYVsOiVBzIhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
