@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_app/firebase_options.dart';
+import 'package:mobile_app/themes/light_mode.dart';
 
 void main() async {
   // firebase setup
@@ -17,9 +19,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(),
+      theme: lightMode,
+      home: const LoginPage(),
     );
   }
 }
