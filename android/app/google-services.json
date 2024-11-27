@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:263365595629:android:951d8bffdeca3009f2d7e4",
+        "mobilesdk_app_id": "1:263365595629:android:d54e320efdabcd81f2d7e4",
         "android_client_info": {
-          "package_name": "com.chamuditha.app"
+          "package_name": "com.example.mobile_app"
         }
       },
       "oauth_client": [],
