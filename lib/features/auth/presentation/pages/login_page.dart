@@ -3,7 +3,10 @@ import 'package:mobile_app/features/auth/presentation/components/my_button.dart'
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final void Function()? togglePages;
+
+
+  const LoginPage({super.key, required this.togglePages});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -74,10 +77,25 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 25),
 
                 // don't have an account
-                Text(
-                  "Don't have an account? Register now",
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account?",
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.primary),
+                    ),
+                    GestureDetector(
+                      onTap: widget.togglePages,
+                      child: Text(
+                        "Register now",
+                        style:
+                            TextStyle(color: Theme.of(context).colorScheme.inversePrimary,
+                            fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
