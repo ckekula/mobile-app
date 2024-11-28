@@ -1,12 +1,8 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
-
-import '../components/my_button.dart';
-import '../components/my_text_field.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? togglePages;
@@ -18,11 +14,56 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
- // text controllers
+  // text controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final pwController = TextEditingController();
-  final ConfirmPwController = TextEditingController();
+  final confirmPwController = TextEditingController();
+
+  // register button is pressed
+  void register() {
+    // prepare info
+    final String name = nameController.text;
+    final String email = emailController.text;
+    final String pw = pwController.text;
+    final String confirmPw = confirmPwController.text;
+
+    // auth cubit
+    final authCubit = context.read<AuthCubit>();
+
+    // ensure fields are not empty
+    if (name.isNotEmpty &&
+        email.isNotEmpty &&
+        pw.isNotEmpty &&
+        confirmPw.isNotEmpty) {
+      // ensure passwords match
+      if (pw == confirmPw) {
+        authCubit.register(name, email, pw);
+      }
+
+      // passwords don't match
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Passwords do not match!")));
+      }
+    }
+
+    // fields are empty -> display error
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please complete all fields!")));
+    }
+  }
+
+  // dispose controllers
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    pwController.dispose();
+    super.dispose();
+  }
+
   // BUILD UI
   @override
   Widget build(BuildContext context) {
@@ -81,11 +122,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 10),
 
                 // confirm pw textfield
                 MyTextField(
-                  controller: ConfirmPwController,
+                  controller: confirmPwController,
                   hintText: "Confirm Password",
                   obscureText: true,
                 ),
@@ -105,18 +146,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already member?",
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.primary),
+                      "Already a member? ",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
                       onTap: widget.togglePages,
                       child: Text(
                         "Login now",
-                        style:
-                            TextStyle(color: Theme.of(context).colorScheme.inversePrimary,
-                            fontWeight: FontWeight.bold,
-                            ),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -128,5 +169,4 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
 }
