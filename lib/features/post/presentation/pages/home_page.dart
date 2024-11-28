@@ -10,9 +10,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // BUILD UI
   @override
   Widget build(BuildContext context) {
+    // SCAFFOLD
     return Scaffold(
+      // APP BAR
       appBar: AppBar(title: const Text("Home"), actions: [
         // logout button
         IconButton(
