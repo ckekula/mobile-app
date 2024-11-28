@@ -1,58 +1,28 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 
-import '../cubits/auth_cubits.dart';
+import '../components/my_button.dart';
+import '../components/my_text_field.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? togglePages;
 
-
-  const LoginPage({super.key, required this.togglePages});
+  const RegisterPage({super.key, required this.togglePages});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  // text controllers
+class _RegisterPageState extends State<RegisterPage> {
+ // text controllers
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-
-// login button pressed
-  void login() {
-    // prepare email & password
-    final String email = emailController.text.trim();
-    final String password = passwordController.text.trim();
-
-    // auth cubit
-    final authCubit = context.read<AuthCubit>();
-
-    // ensure that email & password are not empty
-    if (email.isNotEmpty && password.isNotEmpty) {
-      // login!
-      authCubit.login(email, password);
-    }
-
-    // display error some fields are empty
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill in all fields!"),
-        ),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
+  final pwController = TextEditingController();
+  final ConfirmPwController = TextEditingController();
   // BUILD UI
   @override
   Widget build(BuildContext context) {
@@ -75,9 +45,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 50),
 
-                // welcome back message
+                // Create account massage
                 Text(
-                  "Welcome back, you've been missed!",
+                  "Let's create an account for you!",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
@@ -85,6 +55,15 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 25),
+
+                // email textfield
+                MyTextField(
+                  controller: nameController,
+                  hintText: "Name",
+                  obscureText: false,
+                ),
+
+                const SizedBox(height: 10),
 
                 // email textfield
                 MyTextField(
@@ -97,34 +76,43 @@ class _LoginPageState extends State<LoginPage> {
 
                 // password textfield
                 MyTextField(
-                  controller: emailController,
+                  controller: pwController,
                   hintText: "Password",
                   obscureText: true,
                 ),
 
                 const SizedBox(height: 25),
 
-                // login button
-                MyButton(
-                  onTap: login,
-                  text: "Login",
+                // confirm pw textfield
+                MyTextField(
+                  controller: ConfirmPwController,
+                  hintText: "Confirm Password",
+                  obscureText: true,
                 ),
 
                 const SizedBox(height: 25),
 
-                // don't have an account
+                // Register button
+                MyButton(
+                  onTap: () {},
+                  text: "Register",
+                ),
+
+                const SizedBox(height: 25),
+
+                // Already member? Login now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account?",
+                      "Already member?",
                       style:
                           TextStyle(color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
                       onTap: widget.togglePages,
                       child: Text(
-                        "Register now",
+                        "Login now",
                         style:
                             TextStyle(color: Theme.of(context).colorScheme.inversePrimary,
                             fontWeight: FontWeight.bold,
@@ -140,4 +128,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
 }
