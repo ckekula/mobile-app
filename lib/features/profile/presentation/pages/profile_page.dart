@@ -4,28 +4,28 @@ import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, required String uid});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  //cubits
+  // cubits
   late final authCubit = context.read<AuthCubit>();
 
-  //curent user
+  // curent user
   late AppUser? currentUser = authCubit.currentUser;
 
-  //Build ui
-
+  // BUILD UI
   @override
   Widget build(BuildContext context) {
-
-    //Scaffold
+    // SCAFFOLD
     return Scaffold(
+      // APP BAR
       appBar: AppBar(
         title: Text(currentUser!.email),
+        foregroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
