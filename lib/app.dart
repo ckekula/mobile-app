@@ -23,7 +23,7 @@ import 'package:mobile_app/features/auth/data/firebase_auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
-import 'features/post/presentation/pages/home_page.dart';
+import 'features/home/presentation/pages/home_page.dart';
 import 'themes/light_mode.dart';
 
 class MyApp extends StatelessWidget {
