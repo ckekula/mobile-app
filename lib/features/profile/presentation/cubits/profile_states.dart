@@ -6,22 +6,22 @@ Profile States
 
 import 'package:mobile_app/features/profile/domain/entities/profile_user.dart';
 
-abstract class ProfileStates {}
+abstract class ProfileState {}
 
 // initial
-class ProfileInitial extends ProfileStates {}
+class ProfileInitial extends ProfileState {}
 
 // loading
-class ProfileLoading extends ProfileStates {}
+class ProfileLoading extends ProfileState {}
 
 // loaded
-class ProfileLoaded extends ProfileStates {
+class ProfileLoaded extends ProfileState {
   final ProfileUser profileUser;
   ProfileLoaded(this.profileUser);
 }
 
 // error
-class ProfileError extends ProfileStates {
+class ProfileError extends ProfileState {
   final String message;
   ProfileError(this.message);
 }
