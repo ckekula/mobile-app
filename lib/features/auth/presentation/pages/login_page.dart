@@ -8,7 +8,6 @@ import '../cubits/auth_cubits.dart';
 class LoginPage extends StatefulWidget {
   final void Function()? togglePages;
 
-
   const LoginPage({super.key, required this.togglePages});
 
   @override
@@ -18,14 +17,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // text controllers
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
+  final pwController = TextEditingController();
 
 // login button pressed
   void login() {
     // prepare email & password
     final String email = emailController.text.trim();
-    final String password = passwordController.text.trim();
+    final String password = pwController.text.trim();
 
     // auth cubit
     final authCubit = context.read<AuthCubit>();
@@ -49,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
+    pwController.dispose();
     super.dispose();
   }
 
@@ -97,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // password textfield
                 MyTextField(
-                  controller: emailController,
+                  controller: pwController,
                   hintText: "Password",
                   obscureText: true,
                 ),
@@ -117,18 +115,18 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account?",
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.primary),
+                      "Don't have an account? ",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
                       onTap: widget.togglePages,
                       child: Text(
                         "Register now",
-                        style:
-                            TextStyle(color: Theme.of(context).colorScheme.inversePrimary,
-                            fontWeight: FontWeight.bold,
-                            ),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
