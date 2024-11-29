@@ -3,19 +3,18 @@ Auth cubit: State management
 */
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/domain/repos/auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 
-class AuthCubit extends Cubit<AuthState> {
+class AuthCubit<T> extends Cubit<AuthState> {
   final AuthRepo authRepo;
-  AppUser? _currentUser;
+  T? _currentUser;
 
   AuthCubit({required this.authRepo}) : super(AuthInitial());
 
   // check if user is authenticated
   void checkAuth() async {
-    final AppUser? user = await authRepo.getCurrentUser();
+    final T? user = await authRepo.getCurrentUser();
 
     if (user != null) {
       _currentUser = user;
@@ -26,7 +25,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // get the current user
-  AppUser? get currentUser => _currentUser;
+  T? get currentUser => _currentUser;
 
   // login with email and password
   Future<void> login(String email, String password) async {

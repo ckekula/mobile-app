@@ -2,8 +2,6 @@
 Auth states
 */
 
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
-
 abstract class AuthState {}
 
 // initial
@@ -13,8 +11,8 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 // authenticated
-class Authenticated extends AuthState {
-  final AppUser user;
+class Authenticated<T> extends AuthState {
+  final T user;
   Authenticated(this.user);
 }
 

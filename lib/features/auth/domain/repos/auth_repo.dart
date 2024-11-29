@@ -2,12 +2,11 @@
 Auth Repo - Outlines the possible auth operations for this app
 */
 
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
-
-abstract class AuthRepo {
-  Future<AppUser?> loginWithEmailPassword(String email, String password);
-  Future<AppUser?> registerWithEmailPassword(
+// accepts a generic type T which can be AppUser or AppVendor
+abstract class AuthRepo<T> {
+  Future<T?> loginWithEmailPassword(String email, String password);
+  Future<T?> registerWithEmailPassword(
       String name, String email, String password);
   Future<void> logout();
-  Future<AppUser?> getCurrentUser();
+  Future<T?> getCurrentUser();
 }

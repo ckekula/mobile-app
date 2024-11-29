@@ -20,6 +20,7 @@ Check Auth State
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/data/firebase_auth_repo.dart';
+import 'package:mobile_app/features/auth/data/firebase_vendor_auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
@@ -31,6 +32,7 @@ import 'themes/light_mode.dart';
 class MyApp extends StatelessWidget {
   // auth repo
   final authRepo = FirebaseAuthRepo();
+  final vendorAuthRepo = FirebaseVendorAuthRepo();
 
   // profile repo
   final profileRepo = FirebaseProfileRepo();
@@ -47,6 +49,11 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthCubit(authRepo: authRepo)..checkAuth(),
         ),
 
+        // vendor auth cubit
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(authRepo: vendorAuthRepo)..checkAuth(),
+        ),
+
         // profile cubit
         BlocProvider<ProfileCubit>(
           create: (context) => ProfileCubit(profileRepo: profileRepo),
@@ -57,8 +64,6 @@ class MyApp extends StatelessWidget {
         theme: lightMode,
         home: BlocConsumer<AuthCubit, AuthState>(
           builder: (context, authState) {
-            print(authState);
-
             // unauthenticated -> auth page
             if (authState is Unauthenticated) {
               return const AuthPage();

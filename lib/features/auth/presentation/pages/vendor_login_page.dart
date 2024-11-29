@@ -5,21 +5,21 @@ import 'package:mobile_app/features/auth/presentation/components/my_text_field.d
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/pages/auth_page.dart';
 
-class LoginPage extends StatefulWidget {
+class VendorLoginPage extends StatefulWidget {
   final void Function(AuthPageType) togglePages;
 
-  const LoginPage({super.key, required this.togglePages});
+  const VendorLoginPage({super.key, required this.togglePages});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<VendorLoginPage> createState() => _VendorLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _VendorLoginPageState extends State<VendorLoginPage> {
   // text controllers
   final emailController = TextEditingController();
   final pwController = TextEditingController();
 
-// login button pressed
+  // login button pressed
   void login() {
     // prepare email & password
     final String email = emailController.text.trim();
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // welcome back message
                 Text(
-                  "Welcome back, you've been missed!",
+                  "Welcome back to your store!",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
@@ -120,7 +120,8 @@ class _LoginPageState extends State<LoginPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: () => widget.togglePages(AuthPageType.register),
+                      onTap: () =>
+                          widget.togglePages(AuthPageType.vendorRegister),
                       child: Text(
                         "Register now",
                         style: TextStyle(

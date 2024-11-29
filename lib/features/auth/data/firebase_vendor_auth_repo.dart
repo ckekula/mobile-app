@@ -1,48 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/domain/repos/auth_repo.dart';
 
-class FirebaseAuthRepo implements AuthRepo<AppUser> {
+class FirebaseVendorAuthRepo implements AuthRepo<AppVendor> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   @override
-  Future<AppUser?> getCurrentUser() async {
-    // get logged in user from firebase
-    final firebaseUser = firebaseAuth.currentUser;
+  Future<AppVendor?> getCurrentUser() async {
+    // get logged in vendor from firebase
+    final firebaseVendor = firebaseAuth.currentUser;
 
-    // no user is logged in
-    if (firebaseUser == null) {
+    // no vendor is logged in
+    if (firebaseVendor == null) {
       return null;
     }
 
-    // user exists
-    return AppUser(
-      uid: firebaseUser.uid,
-      email: firebaseUser.email!,
+    // vendor exists
+    return AppVendor(
+      uid: firebaseVendor.uid,
+      email: firebaseVendor.email!,
       name: '',
     );
   }
 
   @override
-  Future<AppUser?> loginWithEmailPassword(String email, String password) async {
+  Future<AppVendor?> loginWithEmailPassword(
+      String email, String password) async {
     try {
       // attempt sign in
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // create User
-      AppUser user =
-          AppUser(uid: userCredential.user!.uid, email: email, name: '');
+      // create Vendor
+      AppVendor vendor =
+          AppVendor(uid: userCredential.user!.uid, email: email, name: '');
 
-      // save user data in firestore
+      // save vendor data in firestore
       await firebaseFirestore
-          .collection("users")
-          .doc(user.uid)
-          .set(user.toJson());
+          .collection("vendors")
+          .doc(vendor.uid)
+          .set(vendor.toJson());
 
-      return user;
+      return vendor;
     } catch (e) {
       throw Exception('Login Failed: $e');
     }
@@ -54,18 +55,18 @@ class FirebaseAuthRepo implements AuthRepo<AppUser> {
   }
 
   @override
-  Future<AppUser?> registerWithEmailPassword(
+  Future<AppVendor?> registerWithEmailPassword(
       String name, String email, String password) async {
     try {
       // attempt sign up
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // create User
-      AppUser user =
-          AppUser(uid: userCredential.user!.uid, email: email, name: name);
+      // create Vendor
+      AppVendor vendor =
+          AppVendor(uid: userCredential.user!.uid, email: email, name: name);
 
-      return user;
+      return vendor;
     } catch (e) {
       throw Exception('Login Failed: $e');
     }

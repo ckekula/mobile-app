@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/auth/presentation/pages/auth_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  final void Function()? togglePages;
+  final void Function(AuthPageType) togglePages;
 
   const RegisterPage({super.key, required this.togglePages});
 
@@ -151,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: widget.togglePages,
+                      onTap: () => widget.togglePages(AuthPageType.login),
                       child: Text(
                         "Login now",
                         style: TextStyle(

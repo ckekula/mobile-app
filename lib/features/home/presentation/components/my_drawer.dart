@@ -49,7 +49,7 @@ class MyDrawer extends StatelessWidget {
 
                   // get current user id
                   final user = context.read<AuthCubit>().currentUser;
-                  String? uid = user!.uid;
+                  String uid = user!.uid;
 
                   // navigate to profile page
                   Navigator.push(

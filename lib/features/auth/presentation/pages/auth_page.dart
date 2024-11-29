@@ -1,11 +1,8 @@
-/*
-Auth Page - This page determines whether to show the login or register page
-*/
-
 import 'package:flutter/widgets.dart';
 import 'package:mobile_app/features/auth/presentation/pages/login_page.dart';
-
-import 'register_page.dart';
+import 'package:mobile_app/features/auth/presentation/pages/register_page.dart';
+import 'package:mobile_app/features/auth/presentation/pages/vendor_login_page.dart';
+import 'package:mobile_app/features/auth/presentation/pages/vendor_register_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -14,27 +11,40 @@ class AuthPage extends StatefulWidget {
   State<AuthPage> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
-  // initially, show the login page
-  bool showLoginPage = true;
+// enum to manage page states
+enum AuthPageType { login, register, vendorLogin, vendorRegister }
 
-  // toggle between pages
-  void togglePages() {
+class _AuthPageState extends State<AuthPage> {
+  // track the current page
+  AuthPageType currentPage = AuthPageType.login;
+
+  // switch pages
+  void switchPage(AuthPageType page) {
     setState(() {
-      showLoginPage = !showLoginPage;
+      currentPage = page;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
-      return LoginPage(
-        togglePages: togglePages,
-      );
-    } else {
-      return RegisterPage(
-        togglePages: togglePages,
-      );
+    switch (currentPage) {
+      case AuthPageType.register:
+        return RegisterPage(
+          togglePages: (page) => switchPage(page),
+        );
+      case AuthPageType.vendorLogin:
+        return VendorLoginPage(
+          togglePages: (page) => switchPage(page),
+        );
+      case AuthPageType.vendorRegister:
+        return VendorRegisterPage(
+          togglePages: (page) => switchPage(page),
+        );
+      case AuthPageType.login:
+      default:
+        return LoginPage(
+          togglePages: (page) => switchPage(page),
+        );
     }
   }
 }
