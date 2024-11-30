@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
@@ -26,7 +27,7 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
     final String password = pwController.text.trim();
 
     // auth cubit
-    final authCubit = context.read<AuthCubit>();
+    final authCubit = context.read<AuthCubit<AppVendor>>();
 
     // ensure that email & password are not empty
     if (email.isNotEmpty && password.isNotEmpty) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
@@ -19,18 +20,23 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final pwController = TextEditingController();
 
-// login button pressed
+  /* 
+  Handle the login button press event.
+  
+  Gets email and password from the [TextEditingController]s, checks if
+  they are not empty, and calls [AuthCubit.login] to attempt login.
+  If fields are empty,display an error message using [ScaffoldMessenger].
+  */
   void login() {
     // prepare email & password
     final String email = emailController.text.trim();
     final String password = pwController.text.trim();
 
     // auth cubit
-    final authCubit = context.read<AuthCubit>();
+    final authCubit = context.read<AuthCubit<AppUser>>();
 
-    // ensure that email & password are not empty
+    // ensure fields are not empty
     if (email.isNotEmpty && password.isNotEmpty) {
-      // login!
       authCubit.login(email, password);
     }
 

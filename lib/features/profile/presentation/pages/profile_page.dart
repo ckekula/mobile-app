@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // cubits
-  late final authCubit = context.read<AuthCubit>();
+  late final authCubit = context.read<AuthCubit<AppUser>>();
   late final profileCubit = context.read<ProfileCubit>();
 
   // curent user

@@ -65,9 +65,15 @@ class FirebaseAuthRepo implements AuthRepo<AppUser> {
       AppUser user =
           AppUser(uid: userCredential.user!.uid, email: email, name: name);
 
+      // save user data in firestore
+      await firebaseFirestore
+          .collection("users")
+          .doc(user.uid)
+          .set(user.toJson());
+
       return user;
     } catch (e) {
-      throw Exception('Login Failed: $e');
+      throw Exception('Register Failed: $e');
     }
   }
 }
