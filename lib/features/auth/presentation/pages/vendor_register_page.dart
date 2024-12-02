@@ -146,7 +146,7 @@ class _RegisterPageState extends State<VendorRegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already a member? ",
+                      "Already a Registered? ",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
                     ),
