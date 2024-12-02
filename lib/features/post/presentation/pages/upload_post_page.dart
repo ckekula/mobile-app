@@ -3,12 +3,10 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
-import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
@@ -31,7 +29,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   final textController = TextEditingController();
 
   //current user
-  AppUser? currentUser;
+  AppVendor? currentUser;
 
   @override
   void initState() {
@@ -42,7 +40,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
 
   //get current user
   void getCurrentUser() async{
-    final authCubit = context.read<AuthCubit>();
+    final authCubit = context.read<VendorAuthCubit>();
     currentUser = authCubit.currentUser;
   }
 

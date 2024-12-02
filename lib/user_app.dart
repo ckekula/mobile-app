@@ -26,12 +26,15 @@ import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cub
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
+import 'features/post/data/firebase_post_repo.dart';
+import 'features/post/presentation/cubits/post_cubit.dart';
 import 'themes/light_mode.dart';
 
 class UserApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
   final firebaseProfileRepo = FirebaseProfileRepo();
   final firebaseStorageRepo = FirebaseStorageRepo();
+
 
   final VoidCallback switchToVendorApp;
 
@@ -55,6 +58,7 @@ class UserApp extends StatelessWidget {
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
+        
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

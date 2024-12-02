@@ -22,6 +22,8 @@ import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_states.dart';
 import 'package:mobile_app/features/auth/presentation/pages/vendor_auth_page.dart';
+import 'package:mobile_app/features/post/data/firebase_post_repo.dart';
+import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
@@ -32,10 +34,14 @@ class VendorApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
   final firebaseProfileRepo = FirebaseProfileRepo();
   final firebaseStorageRepo = FirebaseStorageRepo();
+  //post repo
+  final firebasePostRepo = FirebasePostRepo();
 
   final VoidCallback switchToUserApp;
 
   VendorApp({super.key, required this.switchToUserApp});
+
+
 
   // main application widget.
   @override
@@ -55,6 +61,10 @@ class VendorApp extends StatelessWidget {
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
+        BlocProvider<PostCubit>(
+          create: (context) => PostCubit(
+            postRepo: firebasePostRepo, storageRepo: firebaseStorageRepo,),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
