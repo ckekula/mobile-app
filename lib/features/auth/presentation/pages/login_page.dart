@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
-import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
-import 'package:mobile_app/features/auth/presentation/pages/auth_page.dart';
+
+import '../cubits/auth_cubits.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function(AuthPageType) togglePages;
+  final void Function()? togglePages;
 
   const LoginPage({super.key, required this.togglePages});
 
@@ -20,23 +19,18 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final pwController = TextEditingController();
 
-  /* 
-  Handle the login button press event.
-  
-  Gets email and password from the [TextEditingController]s, checks if
-  they are not empty, and calls [AuthCubit.login] to attempt login.
-  If fields are empty,display an error message using [ScaffoldMessenger].
-  */
+// login button pressed
   void login() {
     // prepare email & password
     final String email = emailController.text.trim();
     final String password = pwController.text.trim();
 
     // auth cubit
-    final authCubit = context.read<AuthCubit<AppUser>>();
+    final authCubit = context.read<AuthCubit>();
 
-    // ensure fields are not empty
+    // ensure that email & password are not empty
     if (email.isNotEmpty && password.isNotEmpty) {
+      // login!
       authCubit.login(email, password);
     }
 
@@ -126,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: () => widget.togglePages(AuthPageType.register),
+                      onTap: widget.togglePages,
                       child: Text(
                         "Register now",
                         style: TextStyle(

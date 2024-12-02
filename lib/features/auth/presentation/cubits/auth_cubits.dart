@@ -3,109 +3,71 @@ Auth cubit: State management
 */
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/domain/repos/auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 
-class AuthCubit<T> extends Cubit<AuthState> {
+class AuthCubit extends Cubit<AuthState> {
   final AuthRepo authRepo;
-  T? _currentUser;
+  AppUser? _currentUser;
 
-  AuthCubit({required this.authRepo}) : super(AuthInitial());
+  AuthCubit({required this.authRepo}) : super(UserAuthInitial());
 
-  /*
-  Check if the user is authenticated or not.
-  
-  If the user is authenticated, save the user and emit [Authenticated] state.
-  If the user is not authenticated, emit [Unauthenticated] state.
-  */
+  // check if user is authenticated
   void checkAuth() async {
-    final T? user = await authRepo.getCurrentUser();
+    final AppUser? user = await authRepo.getCurrentUser();
 
     if (user != null) {
       _currentUser = user;
-      emit(Authenticated(user));
+      emit(UserAuthenticated(user));
     } else {
-      emit(Unauthenticated());
+      emit(UserUnauthenticated());
     }
   }
 
   // get the current user
-  T? get currentUser => _currentUser;
+  AppUser? get currentUser => _currentUser;
 
-  /*
-  Login with email and password
-    
-  If login is successful, save the user and emit [Authenticated] state.
-  If login fails, emit [Unauthenticated] state.
-  
-  If an exception occurs, catch it and emit [AuthError] state.
-  */
+  // login with email and password
   Future<void> login(String email, String password) async {
-    print("AuthCubit.login($email, $password)");
     try {
-      emit(AuthLoading());
+      emit(UserAuthLoading());
       final user = await authRepo.loginWithEmailPassword(email, password);
-
-      print("AuthCubit.login: user=$user");
 
       if (user != null) {
         _currentUser = user;
-        emit(Authenticated(user));
+        emit(UserAuthenticated(user));
       } else {
-        emit(Unauthenticated());
+        emit(UserUnauthenticated());
       }
     } catch (e) {
-      print("AuthCubit.login: error=$e");
-      emit(AuthError("Login failed: ${e.toString()}"));
-      emit(Unauthenticated());
+      emit(UserAuthError(e.toString()));
+      emit(UserUnauthenticated());
     }
   }
 
-  /*
-  Register with email and password
-    
-  If registration is successful, save the user and emit [Authenticated] state.
-  If registration fails, emit [Unauthenticated] states.
-  
-  If an exception occurs, catch it and emit [AuthError] states.
-  */
+  // register with email and password
   Future<void> register(String name, String email, String password) async {
-    print("AuthCubit.register($name, $email, $password)");
     try {
-      emit(AuthLoading());
+      emit(UserAuthLoading());
       final user =
           await authRepo.registerWithEmailPassword(name, email, password);
 
-      print("AuthCubit.register: user=$user");
-
       if (user != null) {
         _currentUser = user;
-        emit(Authenticated(user));
+        emit(UserAuthenticated(user));
       } else {
-        emit(Unauthenticated());
+        emit(UserUnauthenticated());
       }
     } catch (e) {
-      print("AuthCubit.register: error=$e");
-      emit(AuthError("Register failed: ${e.toString()}"));
-      emit(Unauthenticated());
+      emit(UserAuthError(e.toString()));
+      emit(UserUnauthenticated());
     }
   }
 
-  /*
-  Logout the current user.
-  
-  Emits [AuthLoading] initially.
-  
-  If logout is successful, emits [Unauthenticated] state.
-  If logout fails, emits [AuthError]
-  */
+  // logout
   Future<void> logout() async {
-    emit(AuthLoading());
-    try {
-      await authRepo.logout();
-      emit(Unauthenticated());
-    } catch (e) {
-      emit(AuthError("Logout failed: ${e.toString()}"));
-    }
+    authRepo.logout();
+    emit(UserUnauthenticated());
   }
 }

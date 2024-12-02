@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
-import 'package:mobile_app/features/auth/presentation/pages/auth_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  final void Function(AuthPageType) togglePages;
+  final void Function()? togglePages;
 
   const RegisterPage({super.key, required this.togglePages});
 
@@ -23,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final confirmPwController = TextEditingController();
 
   // register button is pressed
-  Future<void> register() async {
+  void register() {
     // prepare info
     final String name = nameController.text;
     final String email = emailController.text;
@@ -31,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final String confirmPw = confirmPwController.text;
 
     // auth cubit
-    final authCubit = context.read<AuthCubit<AppUser>>();
+    final authCubit = context.read<AuthCubit>();
 
     // ensure fields are not empty
     if (name.isNotEmpty &&
@@ -40,25 +38,30 @@ class _RegisterPageState extends State<RegisterPage> {
         confirmPw.isNotEmpty) {
       // ensure passwords match
       if (pw == confirmPw) {
-        try {
-          await authCubit.register(name, email, pw);
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Registration failed: ${e.toString()}")),
-          );
-        }
+        authCubit.register(name, email, pw);
       }
+
       // passwords don't match
       else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Passwords do not match!")));
       }
     }
+
     // fields are empty -> display error
     else {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please complete all fields!")));
     }
+  }
+
+  // dispose controllers
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    pwController.dispose();
+    super.dispose();
   }
 
   // BUILD UI
@@ -148,7 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: () => widget.togglePages(AuthPageType.login),
+                      onTap: widget.togglePages,
                       child: Text(
                         "Login now",
                         style: TextStyle(

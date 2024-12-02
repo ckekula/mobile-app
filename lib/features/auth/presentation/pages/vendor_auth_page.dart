@@ -3,18 +3,17 @@ Auth Page - This page determines whether to show the login or register page
 */
 
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/features/auth/presentation/pages/login_page.dart';
+import 'package:mobile_app/features/auth/presentation/pages/vendor_login_page.dart';
+import 'package:mobile_app/features/auth/presentation/pages/vendor_register_page.dart';
 
-import 'register_page.dart';
-
-class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+class VendorAuthPage extends StatefulWidget {
+  const VendorAuthPage({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<VendorAuthPage> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthPageState extends State<VendorAuthPage> {
   // initially, show the login page
   bool showLoginPage = true;
 
@@ -28,11 +27,11 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     if (showLoginPage) {
-      return LoginPage(
+      return VendorLoginPage(
         togglePages: togglePages,
       );
     } else {
-      return RegisterPage(
+      return VendorRegisterPage(
         togglePages: togglePages,
       );
     }

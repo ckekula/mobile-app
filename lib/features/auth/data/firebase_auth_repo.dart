@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/domain/repos/auth_repo.dart';
 
-class FirebaseAuthRepo implements AuthRepo<AppUser> {
+class FirebaseAuthRepo implements AuthRepo {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
@@ -49,11 +50,6 @@ class FirebaseAuthRepo implements AuthRepo<AppUser> {
   }
 
   @override
-  Future<void> logout() async {
-    await firebaseAuth.signOut();
-  }
-
-  @override
   Future<AppUser?> registerWithEmailPassword(
       String name, String email, String password) async {
     try {
@@ -75,5 +71,82 @@ class FirebaseAuthRepo implements AuthRepo<AppUser> {
     } catch (e) {
       throw Exception('Register Failed: $e');
     }
+  }
+
+  @override
+  Future<AppVendor?> getCurrentVendor() async {
+    final firebaseUser = firebaseAuth.currentUser;
+
+    if (firebaseUser == null) {
+      return null;
+    }
+
+    // Retrieve vendor data
+    final docSnapshot = await firebaseFirestore
+        .collection("vendors")
+        .doc(firebaseUser.uid)
+        .get();
+
+    if (!docSnapshot.exists) return null;
+
+    final data = docSnapshot.data()!;
+    return AppVendor(
+      uid: data['uid'],
+      email: data['email'],
+      name: data['name'],
+    );
+  }
+
+  @override
+  Future<AppVendor?> loginVendorWithEmailPassword(
+      String email, String password) async {
+    try {
+      final userCredential = await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      final vendor = AppVendor(
+        uid: userCredential.user!.uid,
+        email: email,
+        name: '',
+      );
+
+      await firebaseFirestore
+          .collection("vendors")
+          .doc(vendor.uid)
+          .set(vendor.toJson());
+
+      return vendor;
+    } catch (e) {
+      throw Exception('Vendor Login Failed: $e');
+    }
+  }
+
+  @override
+  Future<AppVendor?> registerVendorWithEmailPassword(
+      String name, String email, String password) async {
+    try {
+      final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      final vendor = AppVendor(
+        uid: userCredential.user!.uid,
+        email: email,
+        name: name,
+      );
+
+      await firebaseFirestore
+          .collection("vendors")
+          .doc(vendor.uid)
+          .set(vendor.toJson());
+
+      return vendor;
+    } catch (e) {
+      throw Exception('Vendor Registration Failed: $e');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    await firebaseAuth.signOut();
   }
 }

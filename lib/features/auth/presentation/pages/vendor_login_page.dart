@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
-import 'package:mobile_app/features/auth/presentation/pages/auth_page.dart';
 
 class VendorLoginPage extends StatefulWidget {
-  final void Function(AuthPageType) togglePages;
+  final void Function()? togglePages;
 
   const VendorLoginPage({super.key, required this.togglePages});
 
   @override
-  State<VendorLoginPage> createState() => _VendorLoginPageState();
+  State<VendorLoginPage> createState() => _LoginPageState();
 }
 
-class _VendorLoginPageState extends State<VendorLoginPage> {
+class _LoginPageState extends State<VendorLoginPage> {
   // text controllers
   final emailController = TextEditingController();
   final pwController = TextEditingController();
 
-  // login button pressed
+// login button pressed
   void login() {
     // prepare email & password
     final String email = emailController.text.trim();
     final String password = pwController.text.trim();
 
     // auth cubit
-    final authCubit = context.read<AuthCubit<AppVendor>>();
+    final authCubit = context.read<AuthCubit>();
 
     // ensure that email & password are not empty
     if (email.isNotEmpty && password.isNotEmpty) {
@@ -76,7 +74,7 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
 
                 // welcome back message
                 Text(
-                  "Welcome back to your store!",
+                  "Welcome back, you've been missed!",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
@@ -121,8 +119,7 @@ class _VendorLoginPageState extends State<VendorLoginPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: () =>
-                          widget.togglePages(AuthPageType.vendorRegister),
+                      onTap: widget.togglePages,
                       child: Text(
                         "Register now",
                         style: TextStyle(
