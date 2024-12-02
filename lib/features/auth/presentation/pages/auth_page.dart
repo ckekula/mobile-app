@@ -3,10 +3,8 @@ Auth Page - This page determines whether to show the login or register page
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mobile_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_app/features/auth/presentation/pages/register_page.dart';
-import 'package:mobile_app/features/auth/presentation/pages/vendor_auth_page.dart';
 
 // Define an enum for the page state
 enum AuthPageState {
@@ -16,7 +14,9 @@ enum AuthPageState {
 }
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  final VoidCallback switchToVendorApp;
+
+  const AuthPage({super.key, required this.switchToVendorApp});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -42,11 +42,7 @@ class _AuthPageState extends State<AuthPage> {
 
   // Navigate to vendor register page
   void showVendorRegisterPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const VendorAuthPage(),
-      ),
-    );
+    widget.switchToVendorApp();
   }
 
   @override

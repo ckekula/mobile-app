@@ -33,19 +33,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> pickImage() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      withData: kIsWeb,);
+      withData: kIsWeb,
+    );
 
-      if(result != null) {
-        setState(() {
-          imagepickedFile = result.files.first;
+    if (result != null) {
+      setState(() {
+        imagepickedFile = result.files.first;
 
-          if(kIsWeb){
-            webimage = imagepickedFile!.bytes;
-          }
-        });
-
-      }
-    
+        if (kIsWeb) {
+          webimage = imagepickedFile!.bytes;
+        }
+      });
+    }
   }
 
   // update profile button pressed
@@ -59,7 +58,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         bioTextController.text.isNotEmpty ? bioTextController.text : null;
     final imageMobilePath = kIsWeb ? null : imagepickedFile?.path;
     final imageWebBytes = kIsWeb ? imagepickedFile?.bytes : null;
-
 
     //only update profile if thare is somthing to update
     if (imagepickedFile != null || newBio != null) {
@@ -79,7 +77,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     //nothing to update -> go to previous page
-    else{
+    else {
       Navigator.pop(context);
     }
   }
@@ -139,41 +137,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   shape: BoxShape.circle,
                 ),
                 clipBehavior: Clip.hardEdge,
-
                 child:
-                //display select image mobile
-                (!kIsWeb && imagepickedFile != null)
-                ?
-                Image.file(File(imagepickedFile!.path!),
-                fit: BoxFit.cover,)
-                :
+                    //display select image mobile
+                    (!kIsWeb && imagepickedFile != null)
+                        ? Image.file(
+                            File(imagepickedFile!.path!),
+                            fit: BoxFit.cover,
+                          )
+                        :
 
-                //display selected image for web
-                (kIsWeb && imagepickedFile != null)
-                    ?
-                    Image.memory(webimage!)
-                    :
+                        //display selected image for web
+                        (kIsWeb && imagepickedFile != null)
+                            ? Image.memory(webimage!)
+                            :
 
-                    //no image select -> display existing image
-                    CachedNetworkImage(
-                      imageUrl: widget.user.profileImageUrl,
-                      //loading
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
+                            //no image select -> display existing image
+                            CachedNetworkImage(
+                                imageUrl: widget.user.profileImageUrl,
+                                //loading
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
 
-                      //error failed to load
-                      errorWidget: (context, url, error) =>  Icon(
-                        Icons.person,
-                        size: 72,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                                //error failed to load
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
 
-                      //loaded
-                      imageBuilder: (context, imageProvider) => Image(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                                //loaded
+                                imageBuilder: (context, imageProvider) => Image(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
               ),
             ),
 
@@ -182,14 +179,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
             //pick image button
             Center(
               child: MaterialButton(
-                onPressed: pickImage ,
+                onPressed: pickImage,
                 color: Colors.blue,
                 child: const Text("Pick Image"),
               ),
             ),
 
             // bio
-            Text("Bio"),
+            const Text("Bio"),
 
             const SizedBox(height: 10),
 
