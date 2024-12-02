@@ -1,29 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
-import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
-import 'package:mobile_app/features/profile/presentation/pages/edit_user_profile_page.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
+import 'package:mobile_app/features/profile/presentation/pages/edit_vendor_profile_page.dart';
 
-class UserProfilePage extends StatefulWidget {
+class VendorProfilePage extends StatefulWidget {
   final String uid;
 
-  const UserProfilePage({super.key, required this.uid});
+  const VendorProfilePage({super.key, required this.uid});
 
   @override
-  State<UserProfilePage> createState() => _ProfilePageState();
+  State<VendorProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<UserProfilePage> {
+class _ProfilePageState extends State<VendorProfilePage> {
   // cubits
-  late final authCubit = context.read<AuthCubit>();
-  late final profileCubit = context.read<UserProfileCubit>();
+  late final authCubit = context.read<VendorAuthCubit>();
+  late final profileCubit = context.read<VendorProfileCubit>();
 
   // curent user
-  late AppUser? currentUser = authCubit.currentUser;
+  late AppVendor? currentUser = authCubit.currentUser;
 
   // on startup
   @override
@@ -31,24 +31,24 @@ class _ProfilePageState extends State<UserProfilePage> {
     super.initState();
 
     // load user profile data
-    profileCubit.fetchUserProfile(widget.uid);
+    profileCubit.fetchVendorProfile(widget.uid);
   }
 
   // BUILD UI
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileCubit, UserProfileState>(
+    return BlocBuilder<VendorProfileCubit, VendorProfileState>(
         builder: (context, state) {
       // loaded
-      if (state is UserProfileLoaded) {
-        // get loaded user
-        final user = state.userProfile;
+      if (state is VendorProfileLoaded) {
+        // get loaded vendor
+        final vendor = state.vendorProfile;
 
         // SCAFFOLD
         return Scaffold(
           // APP BAR
           appBar: AppBar(
-              title: Text(user.name),
+              title: Text(vendor.name),
               foregroundColor: Theme.of(context).colorScheme.primary,
               actions: [
                 // edit profile button
@@ -56,7 +56,8 @@ class _ProfilePageState extends State<UserProfilePage> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EditProfilePage(user: user)),
+                        builder: (context) =>
+                            EditVendorProfilePage(user: vendor)),
                   ),
                   icon: const Icon(Icons.settings),
                 )
@@ -67,7 +68,7 @@ class _ProfilePageState extends State<UserProfilePage> {
             children: [
               // email
               Text(
-                user.email,
+                vendor.email,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -77,7 +78,7 @@ class _ProfilePageState extends State<UserProfilePage> {
 
               // profile pic
               CachedNetworkImage(
-                imageUrl: user.profileImageUrl,
+                imageUrl: vendor.profileImageUrl,
                 //loading
                 placeholder: (context, url) =>
                     const CircularProgressIndicator(),
@@ -123,14 +124,14 @@ class _ProfilePageState extends State<UserProfilePage> {
 
               const SizedBox(height: 10),
 
-              BioBox(text: user.bio),
+              BioBox(text: vendor.bio),
 
               // posts
               Padding(
                 padding: const EdgeInsets.only(left: 25.0, top: 25.0),
                 child: Row(
                   children: [
-                    Text("Pio",
+                    Text("Bio",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         )),
@@ -143,7 +144,7 @@ class _ProfilePageState extends State<UserProfilePage> {
       }
 
       // loading
-      else if (state is UserProfileLoading) {
+      else if (state is VendorProfileLoading) {
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(),

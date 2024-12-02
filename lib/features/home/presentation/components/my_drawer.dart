@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_states.dart';
 import 'package:mobile_app/features/home/presentation/components/my_drawer_tile.dart';
 import 'package:mobile_app/features/profile/presentation/pages/user_profile_page.dart';
 
@@ -47,15 +50,31 @@ class MyDrawer extends StatelessWidget {
                   Navigator.of(context).pop();
 
                   // get current user id
-                  final user = context.read<AuthCubit>().currentUser;
-                  String uid = user!.uid;
+                  final authState = context.read<AuthCubit>().state;
+                  final vendorAuthState = context.read<VendorAuthCubit>().state;
 
-                  // navigate to profile page
-                  Navigator.push(
+                  // regular user -> UserProfilePage
+                  if (authState is UserAuthenticated) {
+                    final user = authState.user;
+
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UserProfilePage(uid: uid),
-                      ));
+                        builder: (context) => UserProfilePage(uid: user.uid),
+                      ),
+                    );
+                  }
+                  // vendor -> VendorProfilePage
+                  else if (vendorAuthState is VendorAuthenticated) {
+                    final vendor = vendorAuthState.vendor;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserProfilePage(uid: vendor.uid),
+                      ),
+                    );
+                  }
                 },
               ),
 

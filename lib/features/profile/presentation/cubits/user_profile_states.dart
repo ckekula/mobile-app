@@ -16,12 +16,12 @@ class UserProfileLoading extends UserProfileState {}
 
 // loaded
 class UserProfileLoaded extends UserProfileState {
-  final UserProfile profileUser;
-  UserProfileLoaded(this.profileUser);
+  final UserProfile userProfile;
+  UserProfileLoaded(this.userProfile);
 }
 
 // error
-class ProfileError extends UserProfileState {
+class UserProfileError extends UserProfileState {
   final String message;
-  ProfileError(this.message);
+  UserProfileError(this.message);
 }
