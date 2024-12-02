@@ -6,23 +6,18 @@ import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 
 abstract class AuthState {}
 
-// initial
-class AuthInitial extends AuthState {}
+class UserAuthInitial extends AuthState {}
 
-// loading
-class AuthLoading extends AuthState {}
+class UserAuthLoading extends AuthState {}
 
-// authenticated
-class Authenticated extends AuthState {
+class UserAuthenticated extends AuthState {
   final AppUser user;
-  Authenticated(this.user);
+  UserAuthenticated(this.user);
 }
 
-// unathenticated
-class Unauthenticated extends AuthState {}
+class UserUnauthenticated extends AuthState {}
 
-// error handling
-class AuthError extends AuthState {
+class UserAuthError extends AuthState {
   final String message;
-  AuthError(this.message);
+  UserAuthError(this.message);
 }

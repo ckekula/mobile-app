@@ -4,16 +4,16 @@ import 'package:mobile_app/features/auth/presentation/components/my_button.dart'
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 
-class RegisterPage extends StatefulWidget {
+class VendorRegisterPage extends StatefulWidget {
   final void Function()? togglePages;
 
-  const RegisterPage({super.key, required this.togglePages});
+  const VendorRegisterPage({super.key, required this.togglePages});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<VendorRegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<VendorRegisterPage> {
   // text controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -135,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // Register button
                 MyButton(
-                  onTap: register,
+                  onTap: () {},
                   text: "Register",
                 ),
 

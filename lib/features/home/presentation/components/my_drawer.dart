@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/home/presentation/components/my_drawer_tile.dart';
 import 'package:mobile_app/features/profile/presentation/pages/profile_page.dart';
-
-import '../../../auth/presentation/cubits/auth_cubits.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -17,8 +16,7 @@ class MyDrawer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: Column(
             children: [
-
-              //logo
+              // logo
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50.0),
                 child: Icon(
@@ -33,36 +31,42 @@ class MyDrawer extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
 
-              //home tile
+              // home tile
               MyDrawerTile(
                 title: "H O M E",
                 icon: Icons.home,
                 onTap: () => Navigator.of(context).pop(),
               ),
-          
-              //profile tile
+
+              // profile tile
               MyDrawerTile(
                 title: "P R O F I L E",
                 icon: Icons.person,
                 onTap: () {
+                  // pop menu drawer
                   Navigator.of(context).pop();
+
+                  // get current user id
+                  final user = context.read<AuthCubit>().currentUser;
+                  String uid = user!.uid;
+
+                  // navigate to profile page
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(),
-                      )
-                    );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(uid: uid),
+                      ));
                 },
               ),
-          
-              //search tile
+
+              // search tile
               MyDrawerTile(
                 title: "S E A R C H",
                 icon: Icons.search,
                 onTap: () {},
               ),
-          
-              //setting tile
+
+              // setting tile
               MyDrawerTile(
                 title: "S E T T I N G S",
                 icon: Icons.settings,
@@ -71,7 +75,7 @@ class MyDrawer extends StatelessWidget {
 
               const Spacer(),
 
-              //logout tile
+              // logout tile
               MyDrawerTile(
                 title: "L O G O U T",
                 icon: Icons.login,

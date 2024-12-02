@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/home/presentation/components/my_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +16,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // APP BAR
       appBar: AppBar(
-        title: const Text("Home"), 
+        title: const Text("Home"),
       ),
 
       //Drawer

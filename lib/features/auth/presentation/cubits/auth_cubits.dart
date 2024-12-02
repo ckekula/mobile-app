@@ -11,7 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepo authRepo;
   AppUser? _currentUser;
 
-  AuthCubit({required this.authRepo}) : super(AuthInitial());
+  AuthCubit({required this.authRepo}) : super(UserAuthInitial());
 
   // check if user is authenticated
   void checkAuth() async {
@@ -19,9 +19,9 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (user != null) {
       _currentUser = user;
-      emit(Authenticated(user));
+      emit(UserAuthenticated(user));
     } else {
-      emit(Unauthenticated());
+      emit(UserUnauthenticated());
     }
   }
 
@@ -31,43 +31,43 @@ class AuthCubit extends Cubit<AuthState> {
   // login with email and password
   Future<void> login(String email, String password) async {
     try {
-      emit(AuthLoading());
+      emit(UserAuthLoading());
       final user = await authRepo.loginWithEmailPassword(email, password);
 
       if (user != null) {
         _currentUser = user;
-        emit(Authenticated(user));
+        emit(UserAuthenticated(user));
       } else {
-        emit(Unauthenticated());
+        emit(UserUnauthenticated());
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
-      emit(Unauthenticated());
+      emit(UserAuthError(e.toString()));
+      emit(UserUnauthenticated());
     }
   }
 
   // register with email and password
   Future<void> register(String name, String email, String password) async {
     try {
-      emit(AuthLoading());
+      emit(UserAuthLoading());
       final user =
           await authRepo.registerWithEmailPassword(name, email, password);
 
       if (user != null) {
         _currentUser = user;
-        emit(Authenticated(user));
+        emit(UserAuthenticated(user));
       } else {
-        emit(Unauthenticated());
+        emit(UserUnauthenticated());
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
-      emit(Unauthenticated());
+      emit(UserAuthError(e.toString()));
+      emit(UserUnauthenticated());
     }
   }
 
   // logout
   Future<void> logout() async {
     authRepo.logout();
-    emit(Unauthenticated());
+    emit(UserUnauthenticated());
   }
 }
