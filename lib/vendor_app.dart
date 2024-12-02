@@ -18,6 +18,7 @@ state, it navigates to the [HomePage] or the [AuthPage].
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/data/firebase_auth_repo.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_states.dart';
 import 'package:mobile_app/features/auth/presentation/pages/vendor_auth_page.dart';
@@ -44,6 +45,10 @@ class VendorApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               VendorAuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
         BlocProvider<UserProfileCubit>(
           create: (context) => UserProfileCubit(

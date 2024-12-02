@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/data/firebase_auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
@@ -44,6 +45,10 @@ class UserApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              VendorAuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
         BlocProvider<UserProfileCubit>(
           create: (context) => UserProfileCubit(
