@@ -1,11 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/profile_states.dart';
+import 'package:mobile_app/features/storage/domain/storage_repo.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepo profileRepo;
+  final StorageRepo storageRepo;
 
-  ProfileCubit({required this.profileRepo}) : super(ProfileInitial());
+  ProfileCubit({required this.storageRepo, required this.profileRepo})
+      : super(ProfileInitial());
 
   // fetch user profile using repo
   Future<void> fetchUserProfile(String uid) async {
@@ -24,7 +29,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   // update bio or profile picture
-  Future<void> updateProfile({required String uid, String? newBio}) async {
+  Future<void> updateProfile(
+      {required String uid,
+      String? newBio,
+      Uint8List? imageWebBytes,
+      String? imageMobilePath}) async {
     emit(ProfileLoading());
 
     try {
@@ -36,7 +45,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         return;
       }
 
-      /* update profile picture */
+      // profile picture update
 
       // update new profile
       final updatedProfile =
