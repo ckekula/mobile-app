@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/home/presentation/components/my_drawer_tile.dart';
-import 'package:mobile_app/features/profile/presentation/pages/profile_page.dart';
+import 'package:mobile_app/features/profile/presentation/pages/user_profile_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -54,7 +54,7 @@ class MyDrawer extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfilePage(uid: uid),
+                        builder: (context) => UserProfilePage(uid: uid),
                       ));
                 },
               ),

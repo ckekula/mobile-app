@@ -22,7 +22,7 @@ import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_states.dart';
 import 'package:mobile_app/features/auth/presentation/pages/vendor_auth_page.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'themes/light_mode.dart';
@@ -45,8 +45,8 @@ class VendorApp extends StatelessWidget {
           create: (context) =>
               VendorAuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
-        BlocProvider<ProfileCubit>(
-          create: (context) => ProfileCubit(
+        BlocProvider<UserProfileCubit>(
+          create: (context) => UserProfileCubit(
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),

@@ -2,24 +2,24 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_states.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
 
-class ProfileCubit extends Cubit<ProfileState> {
+class UserProfileCubit extends Cubit<UserProfileState> {
   final ProfileRepo profileRepo;
   final StorageRepo storageRepo;
 
-  ProfileCubit({required this.storageRepo, required this.profileRepo})
-      : super(ProfileInitial());
+  UserProfileCubit({required this.storageRepo, required this.profileRepo})
+      : super(UserProfileInitial());
 
   // fetch user profile using repo
   Future<void> fetchUserProfile(String uid) async {
     try {
-      emit(ProfileLoading());
+      emit(UserProfileLoading());
       final user = await profileRepo.fetchUserProfile(uid);
 
       if (user != null) {
-        emit(ProfileLoaded(user));
+        emit(UserProfileLoaded(user));
       } else {
         emit(ProfileError("User not found"));
       }
@@ -34,7 +34,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       String? newBio,
       Uint8List? imageWebBytes,
       String? imageMobilePath}) async {
-    emit(ProfileLoading());
+    emit(UserProfileLoading());
 
     try {
       // feth the current user
@@ -76,7 +76,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
 
       // update in repo
-      await profileRepo.updateProfile(updatedProfile);
+      await profileRepo.updateUserProfile(updatedProfile);
 
       // refetch the uploaded profile
       await fetchUserProfile(uid);

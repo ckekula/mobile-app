@@ -21,7 +21,7 @@ import 'package:mobile_app/features/auth/data/firebase_auth_repo.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -45,8 +45,8 @@ class UserApp extends StatelessWidget {
           create: (context) =>
               AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
-        BlocProvider<ProfileCubit>(
-          create: (context) => ProfileCubit(
+        BlocProvider<UserProfileCubit>(
+          create: (context) => UserProfileCubit(
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
