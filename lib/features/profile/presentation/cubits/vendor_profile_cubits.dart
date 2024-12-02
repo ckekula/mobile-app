@@ -2,29 +2,29 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_states.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
 
-class ProfileCubit extends Cubit<ProfileState> {
+class VendorProfileCubit extends Cubit<VendorProfileState> {
   final ProfileRepo profileRepo;
   final StorageRepo storageRepo;
 
-  ProfileCubit({required this.storageRepo, required this.profileRepo})
-      : super(ProfileInitial());
+  VendorProfileCubit({required this.storageRepo, required this.profileRepo})
+      : super(VendorProfileInitial());
 
-  // fetch user profile using repo
-  Future<void> fetchUserProfile(String uid) async {
+  // fetch vendor profile using repo
+  Future<void> fetchVendorProfile(String uid) async {
     try {
-      emit(ProfileLoading());
-      final user = await profileRepo.fetchUserProfile(uid);
+      emit(VendorProfileLoading());
+      final vendor = await profileRepo.fetchVendorProfile(uid);
 
-      if (user != null) {
-        emit(ProfileLoaded(user));
+      if (vendor != null) {
+        emit(VendorProfileLoaded(vendor));
       } else {
-        emit(ProfileError("User not found"));
+        emit(VendorProfileError("User not found"));
       }
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(VendorProfileError(e.toString()));
     }
   }
 
@@ -34,14 +34,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       String? newBio,
       Uint8List? imageWebBytes,
       String? imageMobilePath}) async {
-    emit(ProfileLoading());
+    emit(VendorProfileLoading());
 
     try {
       // feth the current user
-      final currentUser = await profileRepo.fetchUserProfile(uid);
+      final currentUser = await profileRepo.fetchVendorProfile(uid);
 
       if (currentUser == null) {
-        emit(ProfileError("Failed to fetch user for profle update"));
+        emit(VendorProfileError("Failed to fetch user for profle update"));
         return;
       }
 
@@ -64,26 +64,26 @@ class ProfileCubit extends Cubit<ProfileState> {
         }
 
         if (imageDownloadUrl == null) {
-          emit(ProfileError("Failed to upload image"));
+          emit(VendorProfileError("Failed to upload image"));
           return;
         }
       }
 
       // update new profile
-      final updatedProfile = currentUser.copyWith(
+      final updatedVendorProfile = currentUser.copyWith(
         newBio: newBio ?? currentUser.bio,
         newProfileImageUrl: imageDownloadUrl ?? currentUser.profileImageUrl,
       );
 
       // update in repo
-      await profileRepo.updateProfile(updatedProfile);
+      await profileRepo.updateVendorProfile(updatedVendorProfile);
 
       // refetch the uploaded profile
-      await fetchUserProfile(uid);
+      await fetchVendorProfile(uid);
 
       // update bio
     } catch (e) {
-      emit(ProfileError("Error updating profile: $e"));
+      emit(VendorProfileError("Error updating profile: $e"));
     }
   }
 }

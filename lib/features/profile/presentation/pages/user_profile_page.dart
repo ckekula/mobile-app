@@ -4,23 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_cubits.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_states.dart';
-import 'package:mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
+import 'package:mobile_app/features/profile/presentation/pages/edit_user_profile_page.dart';
 
-class ProfilePage extends StatefulWidget {
+class UserProfilePage extends StatefulWidget {
   final String uid;
 
-  const ProfilePage({super.key, required this.uid});
+  const UserProfilePage({super.key, required this.uid});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<UserProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<UserProfilePage> {
   // cubits
   late final authCubit = context.read<AuthCubit>();
-  late final profileCubit = context.read<ProfileCubit>();
+  late final profileCubit = context.read<UserProfileCubit>();
 
   // curent user
   late AppUser? currentUser = authCubit.currentUser;
@@ -37,11 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
   // BUILD UI
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(builder: (context, state) {
+    return BlocBuilder<UserProfileCubit, UserProfileState>(
+        builder: (context, state) {
       // loaded
-      if (state is ProfileLoaded) {
+      if (state is UserProfileLoaded) {
         // get loaded user
-        final user = state.profileUser;
+        final user = state.userProfile;
 
         // SCAFFOLD
         return Scaffold(
@@ -93,11 +94,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 120,
                   width: 120,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,)
-                  ),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      )),
                   child: Image(
                     image: imageProvider,
                     fit: BoxFit.cover,
@@ -142,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
 
       // loading
-      else if (state is ProfileLoading) {
+      else if (state is UserProfileLoading) {
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(),

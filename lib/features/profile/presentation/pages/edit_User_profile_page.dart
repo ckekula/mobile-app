@@ -6,12 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
-import 'package:mobile_app/features/profile/domain/entities/profile_user.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_cubits.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/profile_states.dart';
+import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 
 class EditProfilePage extends StatefulWidget {
-  final ProfileUser user;
+  final UserProfile user;
 
   const EditProfilePage({super.key, required this.user});
 
@@ -33,7 +33,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> pickImage() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      withData: kIsWeb,);
+      withData: kIsWeb,
+    );
 
       if(result != null) {
         setState(() {
@@ -45,13 +46,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
 
       }
-    
   }
 
   // update profile button pressed
   void updateProfile() async {
     // profile cubit
-    final profileCubit = context.read<ProfileCubit>();
+    final profileCubit = context.read<UserProfileCubit>();
 
     //prepare image & data
     final String uid = widget.user.uid;
@@ -59,7 +59,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         bioTextController.text.isNotEmpty ? bioTextController.text : null;
     final imageMobilePath = kIsWeb ? null : imagePickedFile?.path;
     final imageWebBytes = kIsWeb ? imagePickedFile?.bytes : null;
-
 
     //only update profile if thare is somthing to update
     if (imagePickedFile != null || newBio != null) {
@@ -79,7 +78,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     //nothing to update -> go to previous page
-    else{
+    else {
       Navigator.pop(context);
     }
   }
@@ -88,10 +87,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     // SCAFFOLD
-    return BlocConsumer<ProfileCubit, ProfileState>(
+    return BlocConsumer<UserProfileCubit, UserProfileState>(
       builder: (context, state) {
         // profile loading
-        if (state is ProfileLoading) {
+        if (state is UserProfileLoading) {
           return const Scaffold(
               body: Center(
             child: Column(
@@ -110,7 +109,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         // profile error
       },
       listener: (context, state) {
-        if (state is ProfileLoaded) {
+        if (state is UserProfileLoaded) {
           Navigator.pop(context);
         }
       },
@@ -139,7 +138,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   shape: BoxShape.circle,
                 ),
                 clipBehavior: Clip.hardEdge,
-
                 child:
                 //display select image mobile
                 (!kIsWeb && imagePickedFile != null)
@@ -154,26 +152,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Image.memory(webImage!)
                     :
 
-                    //no image select -> display existing image
-                    CachedNetworkImage(
-                      imageUrl: widget.user.profileImageUrl,
-                      //loading
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
+                            //no image select -> display existing image
+                            CachedNetworkImage(
+                                imageUrl: widget.user.profileImageUrl,
+                                //loading
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
 
-                      //error failed to load
-                      errorWidget: (context, url, error) =>  Icon(
-                        Icons.person,
-                        size: 72,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                                //error failed to load
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.person,
+                                  size: 72,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
 
-                      //loaded
-                      imageBuilder: (context, imageProvider) => Image(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                                //loaded
+                                imageBuilder: (context, imageProvider) => Image(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
               ),
             ),
 
@@ -182,14 +180,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
             //pick image button
             Center(
               child: MaterialButton(
-                onPressed: pickImage ,
+                onPressed: pickImage,
                 color: Colors.blue,
                 child: const Text("Pick Image"),
               ),
             ),
 
             // bio
-            Text("Bio"),
+            const Text("Bio"),
 
             const SizedBox(height: 10),
 
