@@ -2,38 +2,63 @@
 Auth Page - This page determines whether to show the login or register page
 */
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_app/features/auth/presentation/pages/vendor_login_page.dart';
 import 'package:mobile_app/features/auth/presentation/pages/vendor_register_page.dart';
 
-class VendorAuthPage extends StatefulWidget {
-  const VendorAuthPage({super.key});
-
-  @override
-  State<VendorAuthPage> createState() => _AuthPageState();
+// Define an enum for the page state
+enum VendorAuthPageState {
+  vendorLogin,
+  vendorRegister,
+  register,
 }
 
-class _AuthPageState extends State<VendorAuthPage> {
-  // initially, show the login page
-  bool showLoginPage = true;
+class VendorAuthPage extends StatefulWidget {
+  final VoidCallback switchToUserApp;
 
-  // toggle between pages
-  void togglePages() {
+  const VendorAuthPage({super.key, required this.switchToUserApp});
+
+  @override
+  State<VendorAuthPage> createState() => _VendorAuthPageState();
+}
+
+class _VendorAuthPageState extends State<VendorAuthPage> {
+  // Track the current page state
+  VendorAuthPageState currentPage = VendorAuthPageState.vendorRegister;
+
+  // Navigate to vendor login page
+  void showVendorLoginPage() {
     setState(() {
-      showLoginPage = !showLoginPage;
+      currentPage = VendorAuthPageState.vendorLogin;
+    });
+  }
+
+  // Navigate to suer register page
+  void showRegisterPage() {
+    widget.switchToUserApp();
+  }
+
+  // Navigate to vendor register page
+  void showVendorRegisterPage() {
+    setState(() {
+      currentPage = VendorAuthPageState.vendorRegister;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
-      return VendorLoginPage(
-        togglePages: togglePages,
-      );
-    } else {
-      return VendorRegisterPage(
-        togglePages: togglePages,
-      );
+    switch (currentPage) {
+      case VendorAuthPageState.vendorLogin:
+        return VendorLoginPage(
+          showVendorRegisterPage: showVendorRegisterPage,
+        );
+      case VendorAuthPageState.vendorRegister:
+        return VendorRegisterPage(
+          showVendorLoginPage: showVendorLoginPage,
+          showRegisterPage: showRegisterPage,
+        );
+      default:
+        return Container(); // shouldn't be reached
     }
   }
 }

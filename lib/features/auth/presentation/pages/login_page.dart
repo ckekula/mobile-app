@@ -6,9 +6,9 @@ import 'package:mobile_app/features/auth/presentation/components/my_text_field.d
 import '../cubits/auth_cubits.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function()? togglePages;
+  final void Function()? showRegisterPage;
 
-  const LoginPage({super.key, required this.togglePages});
+  const LoginPage({super.key, required this.showRegisterPage});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: widget.togglePages,
+                      onTap: widget.showRegisterPage,
                       child: Text(
                         "Register now",
                         style: TextStyle(

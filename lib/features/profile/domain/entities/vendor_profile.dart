@@ -1,10 +1,10 @@
 import 'package:mobile_app/features/auth/domain/entities/app_Vendor.dart';
 
-class ProfileVendor extends AppVendor {
+class VendorProfile extends AppVendor {
   final String bio;
   final String profileImageUrl;
 
-  ProfileVendor(
+  VendorProfile(
       {required super.uid,
       required super.email,
       required super.name,
@@ -12,11 +12,11 @@ class ProfileVendor extends AppVendor {
       required this.profileImageUrl});
 
   // method to update profile vendor
-  ProfileVendor copyWith({
+  VendorProfile copyWith({
     String? newBio,
     String? newProfileImageUrl,
   }) {
-    return ProfileVendor(
+    return VendorProfile(
       uid: uid,
       email: email,
       name: name,
@@ -38,8 +38,8 @@ class ProfileVendor extends AppVendor {
   }
 
   // convert json -> profile vendor
-  factory ProfileVendor.fromJson(Map<String, dynamic> json) {
-    return ProfileVendor(
+  factory VendorProfile.fromJson(Map<String, dynamic> json) {
+    return VendorProfile(
       uid: json['uid'],
       email: json['email'],
       name: json['name'],

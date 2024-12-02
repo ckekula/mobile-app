@@ -1,10 +1,10 @@
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 
-class ProfileUser extends AppUser {
+class UserProfile extends AppUser {
   final String bio;
   final String profileImageUrl;
 
-  ProfileUser(
+  UserProfile(
       {required super.uid,
       required super.email,
       required super.name,
@@ -12,11 +12,11 @@ class ProfileUser extends AppUser {
       required this.profileImageUrl});
 
   // method to update profile user
-  ProfileUser copyWith({
+  UserProfile copyWith({
     String? newBio,
     String? newProfileImageUrl,
   }) {
-    return ProfileUser(
+    return UserProfile(
       uid: uid,
       email: email,
       name: name,
@@ -25,7 +25,7 @@ class ProfileUser extends AppUser {
     );
   }
 
-  // convert profile user -> json
+  // convert user profile -> json
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -37,9 +37,9 @@ class ProfileUser extends AppUser {
     };
   }
 
-  // convert json -> profile user
-  factory ProfileUser.fromJson(Map<String, dynamic> json) {
-    return ProfileUser(
+  // convert json -> user profile
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
       uid: json['uid'],
       email: json['email'],
       name: json['name'],
