@@ -21,10 +21,10 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   //mobile image pick
-  PlatformFile? imagepickedFile;
+  PlatformFile? imagePickedFile;
 
   //web image pick
-  Uint8List? webimage;
+  Uint8List? webImage;
 
   //bio text controller
   final bioTextController = TextEditingController();
@@ -37,10 +37,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if(result != null) {
         setState(() {
-          imagepickedFile = result.files.first;
+          imagePickedFile = result.files.first;
 
           if(kIsWeb){
-            webimage = imagepickedFile!.bytes;
+            webImage = imagePickedFile!.bytes;
           }
         });
 
@@ -57,12 +57,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final String uid = widget.user.uid;
     final String? newBio =
         bioTextController.text.isNotEmpty ? bioTextController.text : null;
-    final imageMobilePath = kIsWeb ? null : imagepickedFile?.path;
-    final imageWebBytes = kIsWeb ? imagepickedFile?.bytes : null;
+    final imageMobilePath = kIsWeb ? null : imagePickedFile?.path;
+    final imageWebBytes = kIsWeb ? imagePickedFile?.bytes : null;
 
 
     //only update profile if thare is somthing to update
-    if (imagepickedFile != null || newBio != null) {
+    if (imagePickedFile != null || newBio != null) {
       profileCubit.updateProfile(
         uid: uid,
         newBio: newBio,
@@ -142,16 +142,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                 child:
                 //display select image mobile
-                (!kIsWeb && imagepickedFile != null)
+                (!kIsWeb && imagePickedFile != null)
                 ?
-                Image.file(File(imagepickedFile!.path!),
+                Image.file(File(imagePickedFile!.path!),
                 fit: BoxFit.cover,)
                 :
 
                 //display selected image for web
-                (kIsWeb && imagepickedFile != null)
+                (kIsWeb && imagePickedFile != null)
                     ?
-                    Image.memory(webimage!)
+                    Image.memory(webImage!)
                     :
 
                     //no image select -> display existing image
