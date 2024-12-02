@@ -5,9 +5,9 @@ import 'package:mobile_app/features/auth/presentation/components/my_text_field.d
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 
 class VendorLoginPage extends StatefulWidget {
-  final void Function()? togglePages;
+  final void Function()? showVendorRegisterPage;
 
-  const VendorLoginPage({super.key, required this.togglePages});
+  const VendorLoginPage({super.key, required this.showVendorRegisterPage});
 
   @override
   State<VendorLoginPage> createState() => _LoginPageState();
@@ -74,7 +74,7 @@ class _LoginPageState extends State<VendorLoginPage> {
 
                 // welcome back message
                 Text(
-                  "Welcome back, you've been missed!",
+                  "Welcome back!",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
@@ -119,7 +119,7 @@ class _LoginPageState extends State<VendorLoginPage> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     GestureDetector(
-                      onTap: widget.togglePages,
+                      onTap: widget.showVendorRegisterPage,
                       child: Text(
                         "Register now",
                         style: TextStyle(
