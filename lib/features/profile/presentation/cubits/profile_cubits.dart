@@ -51,27 +51,29 @@ class ProfileCubit extends Cubit<ProfileState> {
       //ensue thare is an image
       if (imageWebBytes != null || imageMobilePath != null) {
         //for mobile
-        if(imageMobilePath != null) {
+        if (imageMobilePath != null) {
           //upload
-          imageDownloadUrl = await storageRepo.uploadProfileImageMobile(imageMobilePath, uid);
+          imageDownloadUrl =
+              await storageRepo.uploadProfileImageMobile(imageMobilePath, uid);
         }
         //for web
-        else if(imageWebBytes != null){
+        else if (imageWebBytes != null) {
           //upload
-          imageDownloadUrl = await storageRepo.uploadProfileImageWeb(imageWebBytes, uid);
+          imageDownloadUrl =
+              await storageRepo.uploadProfileImageWeb(imageWebBytes, uid);
         }
 
-        if(imageDownloadUrl != null) {
+        if (imageDownloadUrl == null) {
           emit(ProfileError("Failed to upload image"));
           return;
         }
       }
 
       // update new profile
-      final updatedProfile =
-          currentUser.copyWith(
-            newBio: newBio ?? currentUser.bio,
-            newProfileImageUrl: imageDownloadUrl ?? currentUser.profileImageUrl,);
+      final updatedProfile = currentUser.copyWith(
+        newBio: newBio ?? currentUser.bio,
+        newProfileImageUrl: imageDownloadUrl ?? currentUser.profileImageUrl,
+      );
 
       // update in repo
       await profileRepo.updateProfile(updatedProfile);
