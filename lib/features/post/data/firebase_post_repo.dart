@@ -11,7 +11,6 @@ class FirebasePostRepo implements PostRepo {
       FirebaseFirestore.instance.collection('posts');
 
   @override
-
   Future<void> createPost(Post post) async {
     try {
       await postCollection.doc(post.id).set(post.toJson());
@@ -44,11 +43,11 @@ class FirebasePostRepo implements PostRepo {
   }
 
   @override
-  Future<List<Post>> fetchPostsByUserId(String userId) async {
+  Future<List<Post>> fetchPostsByVendorId(String vendorId) async {
     try {
       //fetch post snapshots with this uid
       final postSnapshots =
-          await postCollection.where("userId", isEqualTo: userId).get();
+          await postCollection.where("userId", isEqualTo: vendorId).get();
 
       //convert firstore document from json -> list of posts
       final userPosts = postSnapshots.docs
@@ -63,44 +62,41 @@ class FirebasePostRepo implements PostRepo {
 
   @override
   Future<void> toggleLikePost(String postId, String userId) async {
-    try{
+    try {
       // get the posst document from firestore
       final postDoc = await postCollection.doc(postId).get();
 
-      if(postDoc.exists){
+      if (postDoc.exists) {
         final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
 
         //cheak if user has already like this post
         final hasLiked = post.likes.contains(userId);
-         
+
         //update the like this
-        if(hasLiked){
-          post.likes.remove(userId);  //unlike
-        }
-        else{
+        if (hasLiked) {
+          post.likes.remove(userId); //unlike
+        } else {
           post.likes.add(userId); //like
         }
 
         //update the post document with the new like list
         await postCollection.doc(postId).update({
-          'likes':post.likes,
+          'likes': post.likes,
         });
-      }
-      else{
+      } else {
         throw Exception("Post not found");
       }
-    }
-    catch(e){
+    } catch (e) {
       throw Exception("Error liking post: $e");
     }
   }
 
   @override
   Future<void> addComment(String postId, Comment comment) async {
-    try{
+    try {
       //get the post document from firestore
-      final postDoc =await postCollection.doc(postId).get();
-      if(postDoc.exists){
+      final postDoc = await postCollection.doc(postId).get();
+      if (postDoc.exists) {
         //convert json object -> post
         final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
 
@@ -109,24 +105,23 @@ class FirebasePostRepo implements PostRepo {
 
         //update the post document in firstore
         await postCollection.doc(postId).update({
-          'comments':post.comments.map((comment) => comment.toJson()).toList(),
+          'comments': post.comments.map((comment) => comment.toJson()).toList(),
         });
-      }else{
+      } else {
         throw Exception("Post not found");
       }
-    }
-    catch(e){
+    } catch (e) {
       throw Exception("Error adding comment: $e");
     }
   }
 
 // delete comment
-@override
-  Future<void> deleteComment(String postId, String commentId) async{
-    try{
+  @override
+  Future<void> deleteComment(String postId, String commentId) async {
+    try {
       //get the post document from firestore
-      final postDoc =await postCollection.doc(postId).get();
-      if(postDoc.exists){
+      final postDoc = await postCollection.doc(postId).get();
+      if (postDoc.exists) {
         //convert json object -> post
         final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
 
@@ -135,16 +130,13 @@ class FirebasePostRepo implements PostRepo {
 
         //update the post document in firstore
         await postCollection.doc(postId).update({
-          'comments':post.comments.map((comment) => comment.toJson()).toList(),
+          'comments': post.comments.map((comment) => comment.toJson()).toList(),
         });
-      }else{
+      } else {
         throw Exception("Post not found");
       }
-    }
-    catch(e){
+    } catch (e) {
       throw Exception("Error deleting comment: $e");
-    }    
+    }
   }
-
-
 }

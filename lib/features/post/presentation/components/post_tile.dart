@@ -1,17 +1,17 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
-import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
-import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
+import 'package:mobile_app/features/profile/domain/entities/vendor_profile.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 
 class PostTile extends StatefulWidget {
   final Post post;
@@ -27,15 +27,16 @@ class PostTile extends StatefulWidget {
 class _PostTileState extends State<PostTile> {
   //cubits
   late final postCubit = context.read<PostCubit>();
-  late final profileCubit = context.read<UserProfileCubit>(); //profileCubit
+  late final vendorProfileCubit = context.read<VendorProfileCubit>();
 
   bool isOwnPost = false;
 
   // current user
   AppUser? currentUser;
+  AppVendor? currentVendor;
 
   //post user
-  UserProfile? postUser;
+  VendorProfile? postUser;
 
   //on startup
   @override
@@ -43,20 +44,44 @@ class _PostTileState extends State<PostTile> {
     super.initState();
 
     getCurrentUser();
-    fetchPostUser();
+    fetchPostVendor();
   }
 
+  // Get either the current user or vendor depending on who is logged in
   void getCurrentUser() {
     final authCubit = context.read<AuthCubit>();
+    final vendorAuthCubit = context.read<VendorAuthCubit>();
+
+    // Check if logged in as vendor
+    currentVendor = vendorAuthCubit.currentUser;
+    if (currentVendor != null) {
+      setState(() {
+        isOwnPost = (widget.post.userId == currentVendor!.uid);
+      });
+      return;
+    }
+
+    // Check if logged in as user
     currentUser = authCubit.currentUser;
-    isOwnPost = (widget.post.userId == currentUser!.uid);
+    if (currentUser != null) {
+      setState(() {
+        isOwnPost = false; // Users can never own posts
+      });
+      return;
+    }
+
+    // If neither user nor vendor is logged in, handle the null case
+    setState(() {
+      isOwnPost = false;
+    });
   }
 
-  Future<void> fetchPostUser() async {
-    final fetchedUser = await profileCubit.getUserProfile(widget.post.userId);
-    if (fetchedUser != null) {
+  Future<void> fetchPostVendor() async {
+    final fetchedVendor =
+        await vendorProfileCubit.getVendorProfile(widget.post.userId);
+    if (fetchedVendor != null) {
       setState(() {
-        postUser = fetchedUser;
+        postUser = fetchedVendor;
       });
     }
   }
@@ -69,28 +94,31 @@ class _PostTileState extends State<PostTile> {
 
   //user tapped like button
   void toggleLikePost() {
+    // Get the current authenticated user's ID
+    final String? currentUserId = currentUser?.uid ?? currentVendor?.uid;
+
+    if (currentUserId == null) return;
+
     //current like status
-    final isLiked = widget.post.likes.contains(currentUser!.uid);
+    final isLiked = widget.post.likes.contains(currentUserId);
 
     //optimizitically like & update UI
     setState(() {
       if (isLiked) {
-        widget.post.likes.remove(currentUser!.uid); //unlike
+        widget.post.likes.remove(currentUserId); //unlike
       } else {
-        widget.post.likes.add(currentUser!.uid); //like
+        widget.post.likes.add(currentUserId); //like
       }
     });
 
     //update like
-    postCubit
-        .toggleLikePost(widget.post.id, currentUser!.uid)
-        .catchError((error) {
+    postCubit.toggleLikePost(widget.post.id, currentUserId).catchError((error) {
       // if thare is an error , revert back to original value
       setState(() {
         if (isLiked) {
-          widget.post.likes.add(currentUser!.uid); // revert unlike
+          widget.post.likes.add(currentUserId); // revert unlike
         } else {
-          widget.post.likes.remove(currentUser!.uid); // revert like
+          widget.post.likes.remove(currentUserId); // revert like
         }
       });
     });
@@ -103,7 +131,7 @@ class _PostTileState extends State<PostTile> {
   */
 
   //comment text controller
-  final CommentTextController = TextEditingController();
+  final commentTextController = TextEditingController();
 
   //open comment box -> user want to type a new comment
   void openNewCommentBox() {
@@ -111,7 +139,7 @@ class _PostTileState extends State<PostTile> {
       context: context,
       builder: (context) => AlertDialog(
         content: MyTextField(
-            controller: CommentTextController,
+            controller: commentTextController,
             hintText: "Type a Comment",
             obscureText: false),
         actions: [
@@ -135,29 +163,35 @@ class _PostTileState extends State<PostTile> {
   }
 
   void addComment() {
+    final String? currentUserId = currentUser?.uid ?? currentVendor?.uid;
+    final String? currentUserName = currentUser?.email ?? currentVendor?.name;
+
+    if (currentUserId == null || currentUserName == null) return;
+
     //create a new comment
     final newComment = Comment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       postId: widget.post.id,
-      userId: widget.post.userId,
-      userName: widget.post.userName,
-      text: CommentTextController.text,
+      userId: currentUserId,
+      userName: currentUserName,
+      text: commentTextController.text,
       timestamp: DateTime.now(),
     );
 
     // add comment using cubit
-    if (CommentTextController.text.isNotEmpty) {
+    if (commentTextController.text.isNotEmpty) {
       postCubit.addComment(widget.post.id, newComment);
+      commentTextController.clear();
     }
   }
 
   @override
   void dispose() {
-    CommentTextController.dispose();
+    commentTextController.dispose();
     super.dispose();
   }
 
-  //show option for deletion
+  // show option for deletion
   void showOptions() {
     showDialog(
         context: context,
@@ -263,15 +297,18 @@ class _PostTileState extends State<PostTile> {
                     children: [
                       //like button
                       GestureDetector(
-                          onTap: toggleLikePost,
-                          child: Icon(
-                            widget.post.likes.contains(currentUser!.uid)
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: widget.post.likes.contains(currentUser!.uid)
-                                ? Colors.red
-                                : Theme.of(context).colorScheme.primary,
-                          )),
+                        onTap: toggleLikePost,
+                        child: Icon(
+                          widget.post.likes.contains(
+                                  currentUser?.uid ?? currentVendor?.uid)
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: widget.post.likes.contains(
+                                  currentUser?.uid ?? currentVendor?.uid)
+                              ? Colors.red
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
 
                       const SizedBox(width: 5),
                       //like count
@@ -315,7 +352,8 @@ class _PostTileState extends State<PostTile> {
 
           //caption
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
             child: Row(
               children: [
                 // username
@@ -324,14 +362,14 @@ class _PostTileState extends State<PostTile> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
-                  ),
-                
+                ),
+
                 const SizedBox(width: 10),
-            
+
                 // text
                 Text(widget.post.text),
-              
-            ],),
+              ],
+            ),
           ),
 
           //comment section
@@ -339,33 +377,30 @@ class _PostTileState extends State<PostTile> {
             // loaded
             if (state is PostsLoaded) {
               //final individual post
-              final post = state.posts
-                  .firstWhere((post) => post.id == widget.post.id);
-              if(post.comments.isNotEmpty) {
+              final post =
+                  state.posts.firstWhere((post) => post.id == widget.post.id);
+              if (post.comments.isNotEmpty) {
                 // how many comments to show
                 int showCommentCount = post.comments.length;
 
                 //comment section
                 return ListView.builder(
-                  itemCount: showCommentCount,
-                  shrinkWrap: true ,
-                  physics: const NeverScrollableScrollPhysics(),
+                    itemCount: showCommentCount,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      // get individual comment
+                      final comment = post.comments[index];
 
-                  itemBuilder: (context, index) {
-                    // get individual comment
-                    final comment = post.comments[index];
-
-                    //comment tile UI
-                    return Row(
-                      children: [
+                      //comment tile UI
+                      return Row(children: [
                         //name
                         Text(comment.userName),
 
                         // comment text
                         Text(comment.text),
-                    ]);
-
-                  });
+                      ]);
+                    });
               }
             }
 
@@ -381,8 +416,7 @@ class _PostTileState extends State<PostTile> {
               return Center(
                 child: Text(state.message),
               );
-            }
-            else{
+            } else {
               return const Center(
                 child: Text("Somthing went wrong"),
               );

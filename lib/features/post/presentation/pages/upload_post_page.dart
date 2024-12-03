@@ -4,9 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
-import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
@@ -30,19 +30,27 @@ class _UploadPostPageState extends State<UploadPostPage> {
   final textController = TextEditingController();
 
   //current user
-  AppUser? currentUser; //change to vendor
+  AppVendor? currentVendor;
 
   @override
   void initState() {
     super.initState();
 
-    getCurrentUser();
+    getCurrentVendor();
   }
 
-  //get current user
-  void getCurrentUser() async {
-    final authCubit = context.read<AuthCubit>(); //change to vender
-    currentUser = authCubit.currentUser;
+  //get current vendor
+  void getCurrentVendor() {
+    final vendorAuthCubit = context.read<VendorAuthCubit>();
+    currentVendor = vendorAuthCubit.currentUser;
+
+    // If not a vendor, navigate back
+    if (currentVendor == null) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Only vendors can create posts")),
+      );
+    }
   }
 
   //pick image
@@ -74,8 +82,8 @@ class _UploadPostPageState extends State<UploadPostPage> {
     //create a new post object
     final newPost = Post(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      userId: currentUser!.uid,
-      userName: currentUser!.name,
+      userId: currentVendor!.uid,
+      userName: currentVendor!.name,
       text: textController.text,
       imageUrl: '',
       timestamp: DateTime.now(),

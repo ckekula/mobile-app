@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/profile/domain/entities/vendor_profile.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
@@ -26,6 +27,12 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
     } catch (e) {
       emit(VendorProfileError(e.toString()));
     }
+  }
+
+  // return vendor profile given uid -> for loading many profiles for posts
+  Future<VendorProfile?> getVendorProfile(String uid) async {
+    final vendor = await profileRepo.fetchVendorProfile(uid);
+    return vendor;
   }
 
   // update bio or profile picture

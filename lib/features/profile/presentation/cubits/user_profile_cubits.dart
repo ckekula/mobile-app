@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
@@ -27,11 +26,6 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     } catch (e) {
       emit(UserProfileError(e.toString()));
     }
-  }
-  // return usr profile given uid -> useful for loading many profiles for posts
-  Future<UserProfile?> getUserProfile(String uid) async {
-    final user = await profileRepo.fetchUserProfile(uid);
-    return user;
   }
 
   // update bio or profile picture

@@ -5,8 +5,8 @@ abstract class PostRepo {
   Future<List<Post>> fetchAllPosts();
   Future<void> createPost(Post post);
   Future<void> deletePost(Post postId);
-  Future<List<Post>> fetchPostsByUserId(String userId);
-  Future<void> toggleLikePost (String postId,String userId);
+  Future<List<Post>> fetchPostsByVendorId(String userId);
+  Future<void> toggleLikePost(String postId, String userId);
   Future<void> addComment(String postId, Comment comment);
   Future<void> deleteComment(String postId, String commentId);
 }

@@ -137,7 +137,7 @@ class _ProfilePageState extends State<UserProfilePage> {
                 padding: const EdgeInsets.only(left: 25.0, top: 25.0),
                 child: Row(
                   children: [
-                    Text("Pio",
+                    Text("Posts",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         )),
