@@ -91,15 +91,16 @@ class _EditProfilePageState extends State<EditVendorProfilePage> {
         // profile loading
         if (state is VendorProfileLoading) {
           return const Scaffold(
-              body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                Text("Updating..."),
-              ],
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text("Updating..."),
+                ],
+              ),
             ),
-          ));
+          );
         } else {
           // edit form
           return buildEditPage();
