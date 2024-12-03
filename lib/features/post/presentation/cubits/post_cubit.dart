@@ -1,12 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
 
-class PostCubit extends Cubit<PostStates> {
+class PostCubit extends Cubit<PostState> {
   final PostRepo postRepo;
   final StorageRepo storageRepo;
 
@@ -24,13 +25,13 @@ class PostCubit extends Cubit<PostStates> {
       //handle image upload for mobile platform(using file path)
      if(imagePath != null){
        emit(PostsUploading());
-       imageUrl = await storageRepo.uploadProfileImageMobile(imagePath,post.id);
+       imageUrl = await storageRepo.uploadPostImageMobile(imagePath, post.id);
      }
 
       //handle image upload for web platform(using file path)
       else if(imageBytes != null){
         emit(PostsUploading());
-        imageUrl = await storageRepo.uploadProfileImageWeb(imageBytes,post.id);
+        imageUrl = await storageRepo.uploadPostImageWeb(imageBytes, post.id);
       }
 
       //give img url to post
@@ -38,6 +39,9 @@ class PostCubit extends Cubit<PostStates> {
 
       //create post in the backend
       postRepo.createPost(newPost);
+
+      //re-fetch all the post
+      fetchAllPosts();
     }
      catch(e){
       throw Exception("Error creating post: $e");
@@ -65,4 +69,37 @@ class PostCubit extends Cubit<PostStates> {
         throw Exception("Error deleting post: $e");
       }
     }
+
+  // togle like on a post
+  Future<void> toggleLikePost(String postId, String userId) async {
+      try{
+        await postRepo.toggleLikePost(postId, userId);
+        
+      }
+      catch(e){
+        emit (PostsError("Error liking post: $e"));
+      }
+    } 
+
+  //add a comment on a post
+  Future<void> addComment(String postId, Comment comment) async {
+    try{
+      await postRepo.addComment(postId, comment);
+
+      await fetchAllPosts();
+    }
+    catch(e){
+      emit(PostsError("Failed to add comment: $e"));
+    }
+  }
+  //delete from a post
+  Future<void> deleteComment(String postId, String commentId) async {
+    try{
+      await postRepo.deleteComment(postId, commentId);
+      await fetchAllPosts();
+    }
+    catch(e){
+      emit(PostsError("Failed to delete comment: $e"));
+    }
+  }
 }

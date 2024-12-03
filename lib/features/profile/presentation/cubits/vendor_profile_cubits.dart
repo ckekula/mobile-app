@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/features/profile/domain/entities/vendor_profile.dart';
 import 'package:mobile_app/features/profile/domain/repos/profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
@@ -21,11 +22,17 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       if (vendor != null) {
         emit(VendorProfileLoaded(vendor));
       } else {
-        emit(VendorProfileError("User not found"));
+        emit(VendorProfileError("Vendor not found"));
       }
     } catch (e) {
       emit(VendorProfileError(e.toString()));
     }
+  }
+
+  // return vendor profile given uid -> for loading many profiles for posts
+  Future<VendorProfile?> getVendorProfile(String uid) async {
+    final vendor = await profileRepo.fetchVendorProfile(uid);
+    return vendor;
   }
 
   // update bio or profile picture
@@ -38,10 +45,10 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
 
     try {
       // feth the current user
-      final currentUser = await profileRepo.fetchVendorProfile(uid);
+      final currentVendor = await profileRepo.fetchVendorProfile(uid);
 
-      if (currentUser == null) {
-        emit(VendorProfileError("Failed to fetch user for profle update"));
+      if (currentVendor == null) {
+        emit(VendorProfileError("Failed to fetch vendor for profle update"));
         return;
       }
 
@@ -70,9 +77,9 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       }
 
       // update new profile
-      final updatedVendorProfile = currentUser.copyWith(
-        newBio: newBio ?? currentUser.bio,
-        newProfileImageUrl: imageDownloadUrl ?? currentUser.profileImageUrl,
+      final updatedVendorProfile = currentVendor.copyWith(
+        newBio: newBio ?? currentVendor.bio,
+        newProfileImageUrl: imageDownloadUrl ?? currentVendor.profileImageUrl,
       );
 
       // update in repo
@@ -84,6 +91,15 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       // update bio
     } catch (e) {
       emit(VendorProfileError("Error updating profile: $e"));
+    }
+  }
+
+  // toggle follow/unfollow
+  Future<void> toggleFollow(String currentUserId, String targetUserId) async {
+    try {
+      await profileRepo.toggleFollow(currentUserId, targetUserId);
+    } catch (e) {
+      emit(VendorProfileError("Error toggling follow: $e"));
     }
   }
 }

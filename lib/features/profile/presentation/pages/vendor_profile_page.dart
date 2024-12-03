@@ -4,9 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
+import 'package:mobile_app/features/profile/presentation/components/follow_button.dart';
+import 'package:mobile_app/features/profile/presentation/components/vendor_profile_stats.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_vendor_profile_page.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class VendorProfilePage extends StatefulWidget {
   final String uid;
@@ -34,9 +37,53 @@ class _ProfilePageState extends State<VendorProfilePage> {
     profileCubit.fetchVendorProfile(widget.uid);
   }
 
+  /*
+  FOLLOW / UNFOLLOW
+  */
+
+  void followButtonPressed() {
+    final profileState = profileCubit.state;
+    if (profileState is! VendorProfileLoaded) {
+      return; // return if profile is not loaded
+    }
+
+    final vendorProfile = profileState.vendorProfile;
+    final isFollowing = vendorProfile.followers.contains(currentUser!.uid);
+
+    // optimistically update the UI
+    setState(() {
+      // unfollow
+      if (isFollowing) {
+        vendorProfile.followers.remove(currentUser!.uid);
+      }
+      // follow
+      else {
+        vendorProfile.followers.add(currentUser!.uid);
+      }
+    });
+
+    // perform actual toggle in cubit
+    profileCubit.toggleFollow(currentUser!.uid, widget.uid).catchError((error) {
+      // revert update if there is an error
+      setState(() {
+        // unfollow
+        if (isFollowing) {
+          vendorProfile.followers.add(currentUser!.uid);
+        }
+        // follow
+        else {
+          vendorProfile.followers.remove(currentUser!.uid);
+        }
+      });
+    });
+  }
+
   // BUILD UI
   @override
   Widget build(BuildContext context) {
+    // is own post
+    bool isOwnPost = (widget.uid == currentUser!.uid);
+
     return BlocBuilder<VendorProfileCubit, VendorProfileState>(
         builder: (context, state) {
       // loaded
@@ -45,22 +92,23 @@ class _ProfilePageState extends State<VendorProfilePage> {
         final vendor = state.vendorProfile;
 
         // SCAFFOLD
-        return Scaffold(
+        return ConstrainedScaffold(
           // APP BAR
           appBar: AppBar(
               title: Text(vendor.name),
               foregroundColor: Theme.of(context).colorScheme.primary,
               actions: [
                 // edit profile button
-                IconButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            EditVendorProfilePage(user: vendor)),
-                  ),
-                  icon: const Icon(Icons.settings),
-                )
+                if (isOwnPost)
+                  IconButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              EditVendorProfilePage(user: vendor)),
+                    ),
+                    icon: const Icon(Icons.settings),
+                  )
               ]),
 
           // BODY
@@ -108,6 +156,20 @@ class _ProfilePageState extends State<VendorProfilePage> {
               ),
 
               const SizedBox(height: 25),
+
+              // profile stats
+              VendorProfileStats(
+                  postCount: 0, // replace with postCount
+                  followerCount: vendor.followers.length),
+
+              const SizedBox(height: 25),
+
+              // follow button
+              if (isOwnPost)
+                FollowButton(
+                  onPressed: followButtonPressed,
+                  isFollowing: vendor.followers.contains(currentUser!.uid),
+                ),
 
               // bio box
               Padding(

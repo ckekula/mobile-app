@@ -4,27 +4,27 @@ POST SATUS
 
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 
-abstract class PostStates{
+abstract class PostState{
 
 }
 
 //initial 
-class PostsInitial extends PostStates{}
+class PostsInitial extends PostState{}
 
 //loading..
-class PostsLoading extends PostStates{}
+class PostsLoading extends PostState{}
 
 //uploading
-class PostsUploading extends PostStates{}
+class PostsUploading extends PostState{}
 
 //error
-class PostsError extends PostStates{
+class PostsError extends PostState{
   final String message;
   PostsError(this.message);
 }
 
 //loaded
-class PostsLoaded extends PostStates{
+class PostsLoaded extends PostState{
   final List<Post> posts;
   PostsLoaded(this.posts);
 }

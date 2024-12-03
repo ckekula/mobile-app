@@ -17,12 +17,16 @@ class FirebaseProfileRepo implements ProfileRepo {
         final userData = userDoc.data();
 
         if (userData != null) {
+          // fetch following
+          final following = List<String>.from(userData['following'] ?? []);
+
           return UserProfile(
             uid: uid,
             email: userData['email'],
             name: userData['name'],
             bio: userData['bio'] ?? '',
             profileImageUrl: userData['profileImageUrl'].toString(),
+            following: following,
           );
         }
       }
@@ -53,25 +57,30 @@ class FirebaseProfileRepo implements ProfileRepo {
   Future<VendorProfile?> fetchVendorProfile(String uid) async {
     try {
       // get user document from firestore
-      final userDoc =
-          await firebaseFirestore.collection('users').doc(uid).get();
+      final vendorDoc =
+          await firebaseFirestore.collection('vendors').doc(uid).get();
 
-      if (userDoc.exists) {
-        final userData = userDoc.data();
+      if (vendorDoc.exists) {
+        final vendorData = vendorDoc.data();
 
-        if (userData != null) {
+        if (vendorData != null) {
+          // fetch followers
+          final followers = List<String>.from(vendorData['followers'] ?? []);
+
           return VendorProfile(
             uid: uid,
-            email: userData['email'],
-            name: userData['name'],
-            bio: userData['bio'] ?? '',
-            profileImageUrl: userData['profileImageUrl'].toString(),
+            email: vendorData['email'],
+            name: vendorData['name'],
+            bio: vendorData['bio'] ?? '',
+            profileImageUrl: vendorData['profileImageUrl'].toString(),
+            followers: followers,
           );
         }
       }
 
       return null;
     } catch (e) {
+      print("Error fetching vendor profile: $e");
       return null;
     }
   }
@@ -81,7 +90,7 @@ class FirebaseProfileRepo implements ProfileRepo {
     try {
       // convert updated profile -> json to store in firebase
       await firebaseFirestore
-          .collection('users')
+          .collection('vendors')
           .doc(updatedVendorProfile.uid)
           .update({
         'bio': updatedVendorProfile.bio,
@@ -89,6 +98,42 @@ class FirebaseProfileRepo implements ProfileRepo {
       });
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  @override
+  Future<void> toggleFollow(String currentUid, String targetUid) async {
+    try {
+      final currentUserDoc =
+          await firebaseFirestore.collection('users').doc(currentUid).get();
+      final targetVendorDoc =
+          await firebaseFirestore.collection('vendors').doc(targetUid).get();
+
+      if (currentUserDoc.exists && targetVendorDoc.exists) {
+        final currentUserData = currentUserDoc.data();
+        final List<String> currentFollowing =
+            List<String>.from(currentUserData?['following'] ?? []);
+
+        if (currentFollowing.contains(targetUid)) {
+          // unfollow
+          await firebaseFirestore.collection('users').doc(currentUid).update({
+            'following': FieldValue.arrayRemove([targetUid])
+          });
+          await firebaseFirestore.collection('vendors').doc(targetUid).update({
+            'followers': FieldValue.arrayRemove([currentUid])
+          });
+        } else {
+          // follow
+          await firebaseFirestore.collection('users').doc(currentUid).update({
+            'following': FieldValue.arrayUnion([targetUid])
+          });
+          await firebaseFirestore.collection('vendors').doc(targetUid).update({
+            'followers': FieldValue.arrayUnion([currentUid])
+          });
+        }
+      }
+    } catch (e) {
+      return;
     }
   }
 }

@@ -12,4 +12,5 @@ abstract class ProfileRepo {
   Future<VendorProfile?> fetchVendorProfile(String uid);
   Future<void> updateUserProfile(UserProfile profileUser);
   Future<void> updateVendorProfile(VendorProfile profileVendor);
+  Future<void> toggleFollow(String currentUid, String targetUid);
 }

@@ -12,7 +12,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   UserProfileCubit({required this.storageRepo, required this.profileRepo})
       : super(UserProfileInitial());
 
-  // fetch user profile using repo
+  // fetch user profile using repo -> useful for loading singl profile pages
   Future<void> fetchUserProfile(String uid) async {
     try {
       emit(UserProfileLoading());

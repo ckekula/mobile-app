@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
+import 'package:mobile_app/features/profile/presentation/components/user_profile_stats.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_user_profile_page.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class UserProfilePage extends StatefulWidget {
   final String uid;
@@ -45,7 +47,7 @@ class _ProfilePageState extends State<UserProfilePage> {
         final user = state.userProfile;
 
         // SCAFFOLD
-        return Scaffold(
+        return ConstrainedScaffold(
           // APP BAR
           appBar: AppBar(
               title: Text(user.name),
@@ -56,7 +58,7 @@ class _ProfilePageState extends State<UserProfilePage> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => EditProfilePage(user: user)),
+                        builder: (context) => EditUserProfilePage(user: user)),
                   ),
                   icon: const Icon(Icons.settings),
                 )
@@ -108,6 +110,11 @@ class _ProfilePageState extends State<UserProfilePage> {
 
               const SizedBox(height: 25),
 
+              // profile stats
+              UserProfileStats(followingCount: user.following.length),
+
+              const SizedBox(height: 25),
+
               // bio box
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
@@ -130,7 +137,7 @@ class _ProfilePageState extends State<UserProfilePage> {
                 padding: const EdgeInsets.only(left: 25.0, top: 25.0),
                 child: Row(
                   children: [
-                    Text("Pio",
+                    Text("Posts",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         )),

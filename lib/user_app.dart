@@ -1,5 +1,5 @@
 /* 
-App-root level
+User App
 
 uses a [MultiBlocProvider] to provide the following [Bloc]s to its subtree:
 
@@ -23,15 +23,22 @@ import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
+import 'package:mobile_app/features/search/data/firebase_search_repo.dart';
+import 'package:mobile_app/features/search/presentation/cubits/search_states.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
+import 'package:mobile_app/themes/theme_cubit.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
-import 'themes/light_mode.dart';
+import 'features/post/data/firebase_post_repo.dart';
+import 'features/post/presentation/cubits/post_cubit.dart';
 
 class UserApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
   final firebaseProfileRepo = FirebaseProfileRepo();
   final firebaseStorageRepo = FirebaseStorageRepo();
+  final firebasePostRepo = FirebasePostRepo();
+  final firebaseSearchRepo = FirebaseSearchRepo();
 
   final VoidCallback switchToVendorApp;
 
@@ -42,53 +49,83 @@ class UserApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        // auth cubit
         BlocProvider(
           create: (context) =>
               AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
+        // vendor auth cubit
         BlocProvider(
           create: (context) =>
               VendorAuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
+        // user profile cubit
         BlocProvider<UserProfileCubit>(
           create: (context) => UserProfileCubit(
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
+        // vendor profile cubit
+        BlocProvider<VendorProfileCubit>(
+          create: (context) => VendorProfileCubit(
+              profileRepo: firebaseProfileRepo,
+              storageRepo: firebaseStorageRepo),
+        ),
+        // post cubit
+        BlocProvider<PostCubit>(
+          create: (context) => PostCubit(
+            postRepo: firebasePostRepo,
+            storageRepo: firebaseStorageRepo,
+          ),
+        ),
+        // search cubit
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(
+            searchRepo: firebaseSearchRepo,
+          ),
+        ),
+        // theme cubit
+        BlocProvider<ThemeCubit>(
+          create: (context) => ThemeCubit(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightMode,
-        home: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            print(authState);
-            // unauthenticated -> auth page
-            if (authState is UserUnauthenticated) {
-              return AuthPage(switchToVendorApp: switchToVendorApp);
-            }
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, currentTheme) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: currentTheme,
 
-            // authenticated -> home page
-            if (authState is UserAuthenticated) {
-              return const HomePage();
-            }
+          // check user auth state
+          home: BlocConsumer<AuthCubit, AuthState>(
+            builder: (context, authState) {
+              print(authState);
+              // unauthenticated -> auth page
+              if (authState is UserUnauthenticated) {
+                return AuthPage(switchToVendorApp: switchToVendorApp);
+              }
 
-            // loading
-            else {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+              // authenticated -> home page
+              if (authState is UserAuthenticated) {
+                return const HomePage();
+              }
 
-          // listen for errors
-          listener: (context, state) {
-            if (state is UserAuthError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
+              // loading
+              else {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+
+            // listen for errors
+            listener: (context, state) {
+              if (state is UserAuthError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+          ),
         ),
       ),
     );
