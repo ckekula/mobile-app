@@ -6,7 +6,7 @@ import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 import 'package:mobile_app/features/storage/domain/storage_repo.dart';
 
-class PostCubit extends Cubit<PostStates> {
+class PostCubit extends Cubit<PostState> {
   final PostRepo postRepo;
   final StorageRepo storageRepo;
 

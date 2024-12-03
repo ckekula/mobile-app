@@ -60,6 +60,7 @@ class UserApp extends StatelessWidget {
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
+        //post cubit
         BlocProvider<PostCubit>(
           create: (context) => PostCubit(
             postRepo: firebasePostRepo,

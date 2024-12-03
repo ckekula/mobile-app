@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
 
 class FirebasePostRepo implements PostRepo {
-  final firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //store the posts in a collection called 'posts'
   final CollectionReference postCollection = FirebaseFirestore.instance.collection('posts');
@@ -20,8 +21,8 @@ class FirebasePostRepo implements PostRepo {
   }
 
   @override
-  Future<void> deletePost(Post post) async{
-    await postCollection.doc(post.id).delete();
+  Future<void> deletePost(Post postId) async{
+    await postCollection.doc(postId.id).delete();
   }
 
   @override

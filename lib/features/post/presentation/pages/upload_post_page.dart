@@ -108,7 +108,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   @override
   Widget build(BuildContext context) {
     //BLOCK CONSUMER -> builder + listner
-    return BlocConsumer<PostCubit,PostStates>(
+    return BlocConsumer<PostCubit,PostState>(
       builder: (context, state) {
       //loading or uploading
         if(state is PostsUploading || state is PostsUploading) {
