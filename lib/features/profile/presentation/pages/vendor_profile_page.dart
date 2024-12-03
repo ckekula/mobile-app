@@ -5,6 +5,7 @@ import 'package:mobile_app/features/auth/domain/entities/app_vendor.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
 import 'package:mobile_app/features/profile/presentation/components/follow_button.dart';
+import 'package:mobile_app/features/profile/presentation/components/vendor_profile_stats.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_vendor_profile_page.dart';
@@ -42,7 +43,7 @@ class _ProfilePageState extends State<VendorProfilePage> {
   void followButtonPressed() {
     final profileState = profileCubit.state;
     if (profileState is! VendorProfileLoaded) {
-      return; // return if profile is mnot loaded
+      return; // return if profile is not loaded
     }
 
     final vendorProfile = profileState.vendorProfile;
@@ -152,6 +153,13 @@ class _ProfilePageState extends State<VendorProfilePage> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 25),
+
+              // profile stats
+              VendorProfileStats(
+                  postCount: 0, // replace with postCount
+                  followerCount: vendor.followers.length),
 
               const SizedBox(height: 25),
 

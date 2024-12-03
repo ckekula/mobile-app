@@ -23,6 +23,7 @@ import 'package:mobile_app/features/auth/presentation/cubits/auth_states.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/profile/data/firebase_profile_repo.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
+import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -57,6 +58,11 @@ class UserApp extends StatelessWidget {
         ),
         BlocProvider<UserProfileCubit>(
           create: (context) => UserProfileCubit(
+              profileRepo: firebaseProfileRepo,
+              storageRepo: firebaseStorageRepo),
+        ),
+        BlocProvider<VendorProfileCubit>(
+          create: (context) => VendorProfileCubit(
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
