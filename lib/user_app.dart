@@ -35,6 +35,8 @@ class UserApp extends StatelessWidget {
   final firebaseProfileRepo = FirebaseProfileRepo();
   final firebaseStorageRepo = FirebaseStorageRepo();
 
+  //post repo
+  final firebasePostRepo = FirebasePostRepo();
 
   final VoidCallback switchToVendorApp;
 
@@ -58,7 +60,12 @@ class UserApp extends StatelessWidget {
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),
-        
+        BlocProvider<PostCubit>(
+          create: (context) => PostCubit(
+            postRepo: firebasePostRepo,
+            storageRepo: firebaseStorageRepo,
+          ),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -34,7 +34,7 @@ class Post{
     return{
       'id': id,
       'userId': userId,
-      'userName': userName,
+      'name': userName,
       'text': text,
       'imageUrl': imageUrl,
       'timestamp': Timestamp.fromDate(timestamp),
@@ -46,7 +46,7 @@ class Post{
     return Post(
       id: json['id'],
       userId: json['userId'],
-      userName: json['userName'],
+      userName: json['name'],
       text: json['text'],
       imageUrl: json['imageUrl'],
       timestamp: (json['timestamp'] as Timestamp).toDate(),
