@@ -49,25 +49,25 @@ class VendorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // auth cubit
-        BlocProvider(
-          create: (context) =>
-              AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
-        ),
         // vendor auth cubit
         BlocProvider(
           create: (context) =>
               VendorAuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
-        // user profile cubit
-        BlocProvider<UserProfileCubit>(
-          create: (context) => UserProfileCubit(
-              profileRepo: firebaseProfileRepo,
-              storageRepo: firebaseStorageRepo),
+        // auth cubit
+        BlocProvider(
+          create: (context) =>
+              AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
         // vendor profile cubit
         BlocProvider<VendorProfileCubit>(
           create: (context) => VendorProfileCubit(
+              profileRepo: firebaseProfileRepo,
+              storageRepo: firebaseStorageRepo),
+        ),
+        // user profile cubit
+        BlocProvider<UserProfileCubit>(
+          create: (context) => UserProfileCubit(
               profileRepo: firebaseProfileRepo,
               storageRepo: firebaseStorageRepo),
         ),

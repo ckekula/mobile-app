@@ -58,6 +58,9 @@ class MyDrawer extends StatelessWidget {
 
                   // regular user -> UserProfilePage
                   if (authState is UserAuthenticated) {
+                    print("user auth state: $authState");
+                    print("vendor auth state: $vendorAuthState");
+                    print("Navigating to user profile page");
                     final user = authState.user;
 
                     Navigator.push(
@@ -69,7 +72,11 @@ class MyDrawer extends StatelessWidget {
                   }
                   // vendor -> VendorProfilePage
                   else if (vendorAuthState is VendorAuthenticated) {
+                    print("user auth state: $authState");
+                    print("vendor auth state: $vendorAuthState");
+                    print("Navigating to user profile page");
                     final vendor = vendorAuthState.vendor;
+                    print(vendor.name);
 
                     Navigator.push(
                       context,

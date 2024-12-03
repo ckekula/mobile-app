@@ -17,7 +17,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void onSearchChanged() {
     final query = searchController.text;
-    searchCubit.SearchVendors(query);
+    searchCubit.searchVendors(query);
   }
 
   @override

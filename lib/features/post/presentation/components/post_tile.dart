@@ -193,6 +193,7 @@ class _PostTileState extends State<PostTile> {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
+
                 SizedBox(
                   width: 50,
                   child: Row(

@@ -57,20 +57,20 @@ class FirebaseProfileRepo implements ProfileRepo {
   Future<VendorProfile?> fetchVendorProfile(String uid) async {
     try {
       // get user document from firestore
-      final userDoc =
+      final vendorDoc =
           await firebaseFirestore.collection('vendors').doc(uid).get();
 
-      if (userDoc.exists) {
-        final userData = userDoc.data();
+      if (vendorDoc.exists) {
+        final vendorData = vendorDoc.data();
 
-        if (userData != null) {
+        if (vendorData != null) {
           return VendorProfile(
             uid: uid,
-            email: userData['email'],
-            name: userData['name'],
-            bio: userData['bio'] ?? '',
-            profileImageUrl: userData['profileImageUrl'].toString(),
-            followers: List<String>.from(userData['followers']),
+            email: vendorData['email'],
+            name: vendorData['name'],
+            bio: vendorData['bio'] ?? '',
+            profileImageUrl: vendorData['profileImageUrl'].toString(),
+            followers: List<String>.from(vendorData['followers']),
           );
         }
       }

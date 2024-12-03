@@ -29,7 +29,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   final textController = TextEditingController();
 
   //current user
-  AppUser? currentUser;  //change to vendor
+  AppUser? currentUser; //change to vendor
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   }
 
   //get current user
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     final authCubit = context.read<AuthCubit>(); //change to vender
     currentUser = authCubit.currentUser;
   }
@@ -48,27 +48,26 @@ class _UploadPostPageState extends State<UploadPostPage> {
   Future<void> pickImage() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      withData: kIsWeb,);
+      withData: kIsWeb,
+    );
 
-      if(result != null) {
-        setState(() {
-          imagePickedFile = result.files.first;
+    if (result != null) {
+      setState(() {
+        imagePickedFile = result.files.first;
 
-          if(kIsWeb){
-            webImage = imagePickedFile!.bytes;
-          }
-        });
-
-      }
-    
+        if (kIsWeb) {
+          webImage = imagePickedFile!.bytes;
+        }
+      });
+    }
   }
 
   //create & upload post
   void uploadPost() {
     //cheack image and caption both are provided
-    if(imagePickedFile == null || textController.text.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please provide both image and caption")));
+    if (imagePickedFile == null || textController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Please provide both image and caption")));
     }
 
     //create a new post object
@@ -86,15 +85,14 @@ class _UploadPostPageState extends State<UploadPostPage> {
     final postCubit = context.read<PostCubit>();
 
     //web upload
-    if(kIsWeb){
+    if (kIsWeb) {
       postCubit.createPost(newPost, imageBytes: imagePickedFile?.bytes);
     }
 
     //mobile upload
-    else{
+    else {
       postCubit.createPost(newPost, imagePath: imagePickedFile?.path);
     }
-    
   }
 
   @override
@@ -107,72 +105,67 @@ class _UploadPostPageState extends State<UploadPostPage> {
   @override
   Widget build(BuildContext context) {
     //BLOCK CONSUMER -> builder + listner
-    return BlocConsumer<PostCubit,PostState>(
-      builder: (context, state) {
+    return BlocConsumer<PostCubit, PostState>(builder: (context, state) {
       //loading or uploading
-        if(state is PostsUploading || state is PostsUploading) {
-          return const Scaffold(
-           body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        //build upload page
-        return buildUploadPage();
-     },
-        listener: (context, state) {
-          if(state is PostsLoaded){
-            Navigator.pop(context);
-          }
-        }
-    );
+      if (state is PostsUploading || state is PostsUploading) {
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      //build upload page
+      return buildUploadPage();
+    }, listener: (context, state) {
+      if (state is PostsLoaded) {
+        Navigator.pop(context);
+      }
+    });
   }
 
-Widget buildUploadPage() {
-      //SACFFOLD
-      return Scaffold(
-        //APP BAR
-        appBar: AppBar(
-          title: const Text("Create Post"),
-          foregroundColor: Theme.of(context).colorScheme.primary,
-          actions: [
-            //upload button
-            IconButton(
-              onPressed: uploadPost,
-              icon: const Icon(Icons.upload),
+  Widget buildUploadPage() {
+    //SACFFOLD
+    return Scaffold(
+      //APP BAR
+      appBar: AppBar(
+        title: const Text("Create Post"),
+        foregroundColor: Theme.of(context).colorScheme.primary,
+        actions: [
+          //upload button
+          IconButton(
+            onPressed: uploadPost,
+            icon: const Icon(Icons.upload),
+          )
+        ],
+      ),
+
+      //BODY
+      body: Center(
+        child: Column(
+          children: [
+            //image preview for web
+            if (kIsWeb && webImage != null) Image.memory(webImage!),
+
+            //image preview for mobile
+            if (!kIsWeb && imagePickedFile != null)
+              Image.file(File(imagePickedFile!.path!)),
+
+            //pick image button
+            MaterialButton(
+              onPressed: pickImage,
+              color: Colors.blue,
+              child: const Text("Pick Image"),
+            ),
+
+            //caption text field
+            MyTextField(
+              controller: textController,
+              hintText: "Caption",
+              obscureText: false,
             )
           ],
         ),
-
-        //BODY
-        body: Center(
-          child: Column(
-            children: [
-              //image preview for web
-              if(kIsWeb && webImage != null)
-                Image.memory(webImage!),
-
-              //image preview for mobile
-              if(!kIsWeb && imagePickedFile != null )
-                Image.file(File(imagePickedFile!.path!)),
-              
-              //pick image button
-              MaterialButton(
-                onPressed: pickImage,
-                color: Colors.blue,
-                child: const Text("Pick Image"),
-              ),
-
-              //caption text field
-              MyTextField(
-                controller: textController, 
-                hintText: "Caption", 
-                obscureText: false,
-              )
-            ],
-          ),
-        ),
-      );
-    }
- 
+      ),
+    );
+  }
 }

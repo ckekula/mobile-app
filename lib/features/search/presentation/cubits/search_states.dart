@@ -7,7 +7,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   SearchCubit({required this.searchRepo}) : super(SearchInitial());
 
-  Future<void> SearchVendors(String query) async {
+  Future<void> searchVendors(String query) async {
     if (query.isEmpty) {
       emit(SearchInitial());
       return;
