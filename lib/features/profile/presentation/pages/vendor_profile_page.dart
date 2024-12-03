@@ -9,6 +9,7 @@ import 'package:mobile_app/features/profile/presentation/components/vendor_profi
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_vendor_profile_page.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class VendorProfilePage extends StatefulWidget {
   final String uid;
@@ -91,7 +92,7 @@ class _ProfilePageState extends State<VendorProfilePage> {
         final vendor = state.vendorProfile;
 
         // SCAFFOLD
-        return Scaffold(
+        return ConstrainedScaffold(
           // APP BAR
           appBar: AppBar(
               title: Text(vendor.name),

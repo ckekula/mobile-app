@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class VendorLoginPage extends StatefulWidget {
   final void Function()? showVendorRegisterPage;
@@ -54,7 +55,7 @@ class _LoginPageState extends State<VendorLoginPage> {
   @override
   Widget build(BuildContext context) {
     // SCAFFOLD
-    return Scaffold(
+    return ConstrainedScaffold(
       // BODY
       body: SafeArea(
         child: Center(

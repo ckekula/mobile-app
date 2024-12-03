@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_button.dart';
 import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class VendorRegisterPage extends StatefulWidget {
   final void Function()? showVendorLoginPage;
@@ -72,9 +73,7 @@ class _RegisterPageState extends State<VendorRegisterPage> {
   @override
   Widget build(BuildContext context) {
     // SCAFFOLD
-    return Scaffold(
-      // Prevent resizing when the keyboard appears
-      resizeToAvoidBottomInset: false,
+    return ConstrainedScaffold(
       // BODY
       body: Stack(
         children: [

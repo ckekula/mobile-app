@@ -9,6 +9,7 @@ import 'package:mobile_app/features/auth/presentation/components/my_text_field.d
 import 'package:mobile_app/features/profile/domain/entities/vendor_profile.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_states.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class EditVendorProfilePage extends StatefulWidget {
   final VendorProfile user;
@@ -90,7 +91,7 @@ class _EditProfilePageState extends State<EditVendorProfilePage> {
       builder: (context, state) {
         // profile loading
         if (state is VendorProfileLoading) {
-          return const Scaffold(
+          return const ConstrainedScaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

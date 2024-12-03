@@ -8,6 +8,7 @@ import 'package:mobile_app/features/profile/presentation/components/user_profile
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_user_profile_page.dart';
+import 'package:mobile_app/themes/responsive/constrained_scaffold.dart';
 
 class UserProfilePage extends StatefulWidget {
   final String uid;
@@ -46,7 +47,7 @@ class _ProfilePageState extends State<UserProfilePage> {
         final user = state.userProfile;
 
         // SCAFFOLD
-        return Scaffold(
+        return ConstrainedScaffold(
           // APP BAR
           appBar: AppBar(
               title: Text(user.name),
