@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/components/bio_box.dart';
+import 'package:mobile_app/features/profile/presentation/components/user_profile_stats.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 import 'package:mobile_app/features/profile/presentation/pages/edit_user_profile_page.dart';
@@ -105,6 +106,11 @@ class _ProfilePageState extends State<UserProfilePage> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 25),
+
+              // profile stats
+              UserProfileStats(followingCount: user.following.length),
 
               const SizedBox(height: 25),
 
