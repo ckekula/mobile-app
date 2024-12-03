@@ -64,13 +64,16 @@ class FirebaseProfileRepo implements ProfileRepo {
         final vendorData = vendorDoc.data();
 
         if (vendorData != null) {
+          // fetch followers
+          final followers = List<String>.from(vendorData['followers'] ?? []);
+
           return VendorProfile(
             uid: uid,
             email: vendorData['email'],
             name: vendorData['name'],
             bio: vendorData['bio'] ?? '',
             profileImageUrl: vendorData['profileImageUrl'].toString(),
-            followers: List<String>.from(vendorData['followers']),
+            followers: followers,
           );
         }
       }

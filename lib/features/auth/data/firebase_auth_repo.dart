@@ -19,11 +19,9 @@ class FirebaseAuthRepo implements AuthRepo {
     }
 
     //fetch user document from firestore
-    DocumentSnapshot userDoc = await firebaseFirestore
-        .collection("users")
-        .doc(firebaseUser.uid)
-        .get();
-    
+    DocumentSnapshot userDoc =
+        await firebaseFirestore.collection("users").doc(firebaseUser.uid).get();
+
     //cheack if user doc exists
     if (!userDoc.exists) {
       return null;
@@ -52,16 +50,7 @@ class FirebaseAuthRepo implements AuthRepo {
 
       // create User
       AppUser user = AppUser(
-        uid: userCredential.user!.uid, 
-        email: email, 
-        name: userDoc['name']
-        );
-
-      // // save user data in firestore
-      // await firebaseFirestore
-      //     .collection("users")
-      //     .doc(user.uid)
-      //     .set(user.toJson());
+          uid: userCredential.user!.uid, email: email, name: userDoc['name']);
 
       return user;
     } catch (e) {
@@ -129,11 +118,6 @@ class FirebaseAuthRepo implements AuthRepo {
         email: email,
         name: '',
       );
-
-      await firebaseFirestore
-          .collection("vendors")
-          .doc(vendor.uid)
-          .set(vendor.toJson());
 
       return vendor;
     } catch (e) {
