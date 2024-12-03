@@ -393,13 +393,19 @@ class _PostTileState extends State<PostTile> {
                       final comment = post.comments[index];
 
                       //comment tile UI
-                      return Row(children: [
-                        //name
-                        Text(comment.userName),
-
-                        // comment text
-                        Text(comment.text),
-                      ]);
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Row(children: [
+                          //name
+                          Text(
+                            comment.userName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 10),
+                          // comment text
+                          Text(comment.text),
+                        ]),
+                      );
                     });
               }
             }
@@ -417,9 +423,7 @@ class _PostTileState extends State<PostTile> {
                 child: Text(state.message),
               );
             } else {
-              return const Center(
-                child: Text("Somthing went wrong"),
-              );
+              return const SizedBox();
             }
           }),
         ],
