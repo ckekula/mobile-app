@@ -9,6 +9,7 @@ import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
+import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 
@@ -94,9 +95,7 @@ class _PostTileState extends State<PostTile> {
       });
     });
   }
-  
-  
-  
+
   /*
 
   COMMENT
@@ -111,12 +110,10 @@ class _PostTileState extends State<PostTile> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-
         content: MyTextField(
-          controller: CommentTextController,
-          hintText: "Type a Comment",
-          obscureText: false
-        ),
+            controller: CommentTextController,
+            hintText: "Type a Comment",
+            obscureText: false),
         actions: [
           //cancel button
           TextButton(
@@ -137,7 +134,7 @@ class _PostTileState extends State<PostTile> {
     );
   }
 
-  void addComment(){
+  void addComment() {
     //create a new comment
     final newComment = Comment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -149,7 +146,7 @@ class _PostTileState extends State<PostTile> {
     );
 
     // add comment using cubit
-    if(CommentTextController.text.isNotEmpty){
+    if (CommentTextController.text.isNotEmpty) {
       postCubit.addComment(widget.post.id, newComment);
     }
   }
@@ -260,7 +257,6 @@ class _PostTileState extends State<PostTile> {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
-
                 SizedBox(
                   width: 50,
                   child: Row(
@@ -276,7 +272,7 @@ class _PostTileState extends State<PostTile> {
                                 ? Colors.red
                                 : Theme.of(context).colorScheme.primary,
                           )),
-                      
+
                       const SizedBox(width: 5),
                       //like count
                       Text(
@@ -295,10 +291,19 @@ class _PostTileState extends State<PostTile> {
                   onTap: openNewCommentBox,
                   child: Icon(
                     Icons.comment,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
 
-                Text('0'),
+                const SizedBox(width: 5),
+
+                Text(
+                  widget.post.comments.length.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 12,
+                  ),
+                ),
 
                 const Spacer(),
 
@@ -306,8 +311,83 @@ class _PostTileState extends State<PostTile> {
                 Text(widget.post.timestamp.toString()),
               ],
             ),
+          ),
+
+          //caption
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: Row(
+              children: [
+                // username
+                Text(
+                  widget.post.userName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  ),
+                
+                const SizedBox(width: 10),
             
-          )
+                // text
+                Text(widget.post.text),
+              
+            ],),
+          ),
+
+          //comment section
+          BlocBuilder<PostCubit, PostState>(builder: (context, state) {
+            // loaded
+            if (state is PostsLoaded) {
+              //final individual post
+              final post = state.posts
+                  .firstWhere((post) => post.id == widget.post.id);
+              if(post.comments.isNotEmpty) {
+                // how many comments to show
+                int showCommentCount = post.comments.length;
+
+                //comment section
+                return ListView.builder(
+                  itemCount: showCommentCount,
+                  shrinkWrap: true ,
+                  physics: const NeverScrollableScrollPhysics(),
+
+                  itemBuilder: (context, index) {
+                    // get individual comment
+                    final comment = post.comments[index];
+
+                    //comment tile UI
+                    return Row(
+                      children: [
+                        //name
+                        Text(comment.userName),
+
+                        // comment text
+                        Text(comment.text),
+                    ]);
+
+                  });
+              }
+            }
+
+            //loading
+            if (state is PostsLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            //error
+            else if (state is PostsError) {
+              return Center(
+                child: Text(state.message),
+              );
+            }
+            else{
+              return const Center(
+                child: Text("Somthing went wrong"),
+              );
+            }
+          }),
         ],
       ),
     );
