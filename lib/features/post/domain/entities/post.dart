@@ -20,7 +20,7 @@ class Post{
     required this.imageUrl,
     required this.timestamp,
     required this.likes,
-    this.comments = const [],
+    required this.comments,
   });
 
   Post copywith({String? imageUrl}){
@@ -46,7 +46,7 @@ class Post{
       'imageUrl': imageUrl,
       'timestamp': Timestamp.fromDate(timestamp),
       'likes': likes,
-      'comments': comments.map((comment) => comment).toList(),
+      'comments': comments.map((comment) => comment.toJson()).toList(),
       };
   }
 
@@ -66,7 +66,7 @@ class Post{
       imageUrl: json['imageUrl'],
       timestamp: (json['timestamp'] as Timestamp).toDate(),
       likes: List<String>.from(json['likes']??[]),
-
+      comments: comments,
     );
   } 
 }

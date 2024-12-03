@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
-import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 
 class FirebasePostRepo implements PostRepo {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;

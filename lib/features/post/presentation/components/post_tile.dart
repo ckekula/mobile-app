@@ -4,7 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/auth/domain/entities/app_user.dart';
+import 'package:mobile_app/features/auth/presentation/components/my_text_field.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
+import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
@@ -91,6 +93,71 @@ class _PostTileState extends State<PostTile> {
         }
       });
     });
+  }
+  
+  
+  
+  /*
+
+  COMMENT
+
+  */
+
+  //comment text controller
+  final CommentTextController = TextEditingController();
+
+  //open comment box -> user want to type a new comment
+  void openNewCommentBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+
+        content: MyTextField(
+          controller: CommentTextController,
+          hintText: "Type a Comment",
+          obscureText: false
+        ),
+        actions: [
+          //cancel button
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel"),
+          ),
+
+          //save button
+          TextButton(
+            onPressed: () {
+              addComment();
+              Navigator.of(context).pop();
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addComment(){
+    //create a new comment
+    final newComment = Comment(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      postId: widget.post.id,
+      userId: widget.post.userId,
+      userName: widget.post.userName,
+      text: CommentTextController.text,
+      timestamp: DateTime.now(),
+    );
+
+    // add comment using cubit
+    if(CommentTextController.text.isNotEmpty){
+      postCubit.addComment(widget.post.id, newComment);
+    }
+  }
+
+  @override
+  void dispose() {
+    CommentTextController.dispose();
+    super.dispose();
   }
 
   //show option for deletion
@@ -224,7 +291,12 @@ class _PostTileState extends State<PostTile> {
                 ),
 
                 //comment button
-                Icon(Icons.comment),
+                GestureDetector(
+                  onTap: openNewCommentBox,
+                  child: Icon(
+                    Icons.comment,
+                  ),
+                ),
 
                 Text('0'),
 
@@ -234,6 +306,7 @@ class _PostTileState extends State<PostTile> {
                 Text(widget.post.timestamp.toString()),
               ],
             ),
+            
           )
         ],
       ),
