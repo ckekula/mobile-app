@@ -27,11 +27,11 @@ import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_c
 import 'package:mobile_app/features/search/data/firebase_search_repo.dart';
 import 'package:mobile_app/features/search/presentation/cubits/search_states.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
+import 'package:mobile_app/themes/theme_cubit.dart';
 import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/post/data/firebase_post_repo.dart';
 import 'features/post/presentation/cubits/post_cubit.dart';
-import 'themes/light_mode.dart';
 
 class UserApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
@@ -86,40 +86,48 @@ class UserApp extends StatelessWidget {
             searchRepo: firebaseSearchRepo,
           ),
         ),
+        // theme cubit
+        BlocProvider<ThemeCubit>(
+          create: (context) => ThemeCubit(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightMode,
-        home: BlocConsumer<AuthCubit, AuthState>(
-          builder: (context, authState) {
-            print(authState);
-            // unauthenticated -> auth page
-            if (authState is UserUnauthenticated) {
-              return AuthPage(switchToVendorApp: switchToVendorApp);
-            }
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, currentTheme) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: currentTheme,
 
-            // authenticated -> home page
-            if (authState is UserAuthenticated) {
-              return const HomePage();
-            }
+          // check user auth state
+          home: BlocConsumer<AuthCubit, AuthState>(
+            builder: (context, authState) {
+              print(authState);
+              // unauthenticated -> auth page
+              if (authState is UserUnauthenticated) {
+                return AuthPage(switchToVendorApp: switchToVendorApp);
+              }
 
-            // loading
-            else {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+              // authenticated -> home page
+              if (authState is UserAuthenticated) {
+                return const HomePage();
+              }
 
-          // listen for errors
-          listener: (context, state) {
-            if (state is UserAuthError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
+              // loading
+              else {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+
+            // listen for errors
+            listener: (context, state) {
+              if (state is UserAuthError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+          ),
         ),
       ),
     );

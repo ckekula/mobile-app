@@ -30,8 +30,8 @@ import 'package:mobile_app/features/profile/presentation/cubits/vendor_profile_c
 import 'package:mobile_app/features/search/data/firebase_search_repo.dart';
 import 'package:mobile_app/features/search/presentation/cubits/search_states.dart';
 import 'package:mobile_app/features/storage/data/firebase_storage_repo.dart';
+import 'package:mobile_app/themes/theme_cubit.dart';
 import 'features/home/presentation/pages/home_page.dart';
-import 'themes/light_mode.dart';
 
 class VendorApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
@@ -82,40 +82,48 @@ class VendorApp extends StatelessWidget {
         BlocProvider<SearchCubit>(
           create: (context) => SearchCubit(searchRepo: firebaseSearchRepo),
         ),
+        // theme cubit
+        BlocProvider<ThemeCubit>(
+          create: (context) => ThemeCubit(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightMode,
-        home: BlocConsumer<VendorAuthCubit, VendorAuthState>(
-          builder: (context, authState) {
-            print(authState);
-            // unauthenticated -> auth page
-            if (authState is VendorUnauthenticated) {
-              return VendorAuthPage(switchToUserApp: switchToUserApp);
-            }
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, currentTheme) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: currentTheme,
 
-            // authenticated -> home page
-            if (authState is VendorAuthenticated) {
-              return const HomePage();
-            }
+          // bloc consumer - check vendor auth state
+          home: BlocConsumer<VendorAuthCubit, VendorAuthState>(
+            builder: (context, authState) {
+              print(authState);
+              // unauthenticated -> auth page
+              if (authState is VendorUnauthenticated) {
+                return VendorAuthPage(switchToUserApp: switchToUserApp);
+              }
 
-            // loading
-            else {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+              // authenticated -> home page
+              if (authState is VendorAuthenticated) {
+                return const HomePage();
+              }
 
-          // listen for errors
-          listener: (context, state) {
-            if (state is VendorAuthError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
-            }
-          },
+              // loading
+              else {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+
+            // listen for errors
+            listener: (context, state) {
+              if (state is VendorAuthError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+          ),
         ),
       ),
     );
