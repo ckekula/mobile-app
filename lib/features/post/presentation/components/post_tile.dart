@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,6 +58,41 @@ class _PostTileState extends State<PostTile> {
     }
   }
 
+  /*
+
+  like
+
+  */
+
+  //user tapped like button
+  void toggleLikePost() {
+    //current like status
+    final isLiked = widget.post.likes.contains(currentUser!.uid);
+
+    //optimizitically like & update UI
+    setState(() {
+      if (isLiked) {
+        widget.post.likes.remove(currentUser!.uid); //unlike
+      } else {
+        widget.post.likes.add(currentUser!.uid); //like
+      }
+    });
+
+    //update like
+    postCubit
+        .toggleLikePost(widget.post.id, currentUser!.uid)
+        .catchError((error) {
+      // if thare is an error , revert back to original value
+      setState(() {
+        if (isLiked) {
+          widget.post.likes.add(currentUser!.uid); // revert unlike
+        } else {
+          widget.post.likes.remove(currentUser!.uid); // revert like
+        }
+      });
+    });
+  }
+
   //show option for deletion
   void showOptions() {
     showDialog(
@@ -65,11 +102,12 @@ class _PostTileState extends State<PostTile> {
               actions: [
                 //cancel Button
                 TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel"),),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Cancel"),
+                ),
 
                 //delete Button
-                
+
                 TextButton(
                     onPressed: () {
                       widget.onDeletePressed!();
@@ -116,21 +154,23 @@ class _PostTileState extends State<PostTile> {
 
                 //name
                 Text(
-                  widget.post.text,
+                  widget.post.userName,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
                     fontWeight: FontWeight.bold,
-                  ),  
+                  ),
                 ),
-            
+
                 const Spacer(),
-            
+
                 //delete button
-                if(isOwnPost)
+                if (isOwnPost)
                   GestureDetector(
                     onTap: showOptions,
-                    child: Icon(Icons.delete, 
-                    color: Theme.of(context).colorScheme.primary,),
+                    child: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   )
               ],
             ),
@@ -151,25 +191,49 @@ class _PostTileState extends State<PostTile> {
           //buttons -> like,comment,timstamp
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(children: [
-              //like button
-              Icon(Icons.favorite_border),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  child: Row(
+                    children: [
+                      //like button
+                      GestureDetector(
+                          onTap: toggleLikePost,
+                          child: Icon(
+                            widget.post.likes.contains(currentUser!.uid)
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: widget.post.likes.contains(currentUser!.uid)
+                                ? Colors.red
+                                : Theme.of(context).colorScheme.primary,
+                          )),
+                      
+                      const SizedBox(width: 5),
+                      //like count
+                      Text(
+                        widget.post.likes.length.toString(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-              Text('0'),
-              const SizedBox(width: 20,),
-            
-              //comment button
-              Icon(Icons.comment),
+                //comment button
+                Icon(Icons.comment),
 
-              Text('0'),
-            
-              const Spacer(),
-            
-              //timestamp
-              Text(widget.post.timestamp.toString()),
-            ],),
+                Text('0'),
+
+                const Spacer(),
+
+                //timestamp
+                Text(widget.post.timestamp.toString()),
+              ],
+            ),
           )
-
         ],
       ),
     );

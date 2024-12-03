@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
 
@@ -11,7 +10,6 @@ class FirebasePostRepo implements PostRepo {
 
   @override
   Future<void> createPost(Post post) async{
-    //TODO: implement createPost
     try {
       await postCollection.doc(post.id).set(post.toJson());
     }
@@ -64,4 +62,37 @@ class FirebasePostRepo implements PostRepo {
     }
   }
 
+  @override
+  Future<void> toggleLikePost(String postId, String userId) async {
+    try{
+      // get the posst document from firestore
+      final postDoc = await postCollection.doc(postId).get();
+
+      if(postDoc.exists){
+        final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+        //cheak if user has already like this post
+        final hasLiked = post.likes.contains(userId);
+         
+        //update the like this
+        if(hasLiked){
+          post.likes.remove(userId);  //unlike
+        }
+        else{
+          post.likes.add(userId); //like
+        }
+
+        //update the post document with the new like list
+        await postCollection.doc(postId).update({
+          'likes':post.likes,
+        });
+      }
+      else{
+        throw Exception("Post not found");
+      }
+    }
+    catch(e){
+      throw Exception("Error liking post: $e");
+    }
+  }
 }

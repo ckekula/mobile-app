@@ -8,6 +8,7 @@ class Post{
   final String text;
   final String imageUrl;
   final DateTime timestamp;
+  final List<String> likes; //store uids
 
   Post({
     required this.id,
@@ -16,6 +17,7 @@ class Post{
     required this.text,
     required this.imageUrl,
     required this.timestamp,
+    required this.likes,
   });
 
   Post copywith({String? imageUrl}){
@@ -26,6 +28,7 @@ class Post{
       text: text,
       imageUrl: imageUrl ?? this.imageUrl,
       timestamp: timestamp,
+      likes: likes,
     );
   }
 
@@ -38,6 +41,7 @@ class Post{
       'text': text,
       'imageUrl': imageUrl,
       'timestamp': Timestamp.fromDate(timestamp),
+      'likes': likes
       };
   }
 
@@ -50,6 +54,7 @@ class Post{
       text: json['text'],
       imageUrl: json['imageUrl'],
       timestamp: (json['timestamp'] as Timestamp).toDate(),
+      likes: List<String>.from(json['likes']??[]),
     );
   } 
 }
