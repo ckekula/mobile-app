@@ -24,13 +24,13 @@ class PostCubit extends Cubit<PostState> {
       //handle image upload for mobile platform(using file path)
      if(imagePath != null){
        emit(PostsUploading());
-       imageUrl = await storageRepo.uploadProfileImageMobile(imagePath, post.id);
+       imageUrl = await storageRepo.uploadPostImageMobile(imagePath, post.id);
      }
 
       //handle image upload for web platform(using file path)
       else if(imageBytes != null){
         emit(PostsUploading());
-        imageUrl = await storageRepo.uploadProfileImageWeb(imageBytes, post.id);
+        imageUrl = await storageRepo.uploadPostImageWeb(imageBytes, post.id);
       }
 
       //give img url to post
