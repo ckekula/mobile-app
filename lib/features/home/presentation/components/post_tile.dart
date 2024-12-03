@@ -65,11 +65,12 @@ class _PostTileState extends State<PostTile> {
               actions: [
                 //cancel Button
                 TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("Cancel"),),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Cancel"),
+                ),
 
                 //delete Button
-                
+
                 TextButton(
                     onPressed: () {
                       widget.onDeletePressed!();
@@ -120,17 +121,19 @@ class _PostTileState extends State<PostTile> {
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
                     fontWeight: FontWeight.bold,
-                  ),  
+                  ),
                 ),
-            
+
                 const Spacer(),
-            
+
                 //delete button
-                if(isOwnPost)
+                if (isOwnPost)
                   GestureDetector(
                     onTap: showOptions,
-                    child: Icon(Icons.delete, 
-                    color: Theme.of(context).colorScheme.primary,),
+                    child: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   )
               ],
             ),
@@ -151,25 +154,28 @@ class _PostTileState extends State<PostTile> {
           //buttons -> like,comment,timstamp
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(children: [
-              //like button
-              Icon(Icons.favorite_border),
+            child: Row(
+              children: [
+                //like button
+                const Icon(Icons.favorite_border),
 
-              Text('0'),
-              const SizedBox(width: 20,),
-            
-              //comment button
-              Icon(Icons.comment),
+                const Text('0'),
+                const SizedBox(
+                  width: 20,
+                ),
 
-              Text('0'),
-            
-              const Spacer(),
-            
-              //timestamp
-              Text(widget.post.timestamp.toString()),
-            ],),
+                //comment button
+                const Icon(Icons.comment),
+
+                const Text('0'),
+
+                const Spacer(),
+
+                //timestamp
+                Text(widget.post.timestamp.toString()),
+              ],
+            ),
           )
-
         ],
       ),
     );

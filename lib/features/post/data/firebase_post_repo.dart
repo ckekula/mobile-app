@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
 
@@ -7,61 +6,56 @@ class FirebasePostRepo implements PostRepo {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //store the posts in a collection called 'posts'
-  final CollectionReference postCollection = FirebaseFirestore.instance.collection('posts');
+  final CollectionReference postCollection =
+      FirebaseFirestore.instance.collection('posts');
 
   @override
-  Future<void> createPost(Post post) async{
-    //TODO: implement createPost
+  Future<void> createPost(Post post) async {
     try {
       await postCollection.doc(post.id).set(post.toJson());
-    }
-    catch(e){
+    } catch (e) {
       throw Exception("Error creating post: $e");
     }
   }
 
   @override
-  Future<void> deletePost(Post postId) async{
+  Future<void> deletePost(Post postId) async {
     await postCollection.doc(postId.id).delete();
   }
 
   @override
-  Future<List<Post>> fetchAllPosts() async{
-    //TODO: implement fetchAllPosts
+  Future<List<Post>> fetchAllPosts() async {
     try {
       //get all post most recent post at the top
-      final postSnapshots = await postCollection.orderBy('timestamp', descending: true).get();
+      final postSnapshots =
+          await postCollection.orderBy('timestamp', descending: true).get();
 
       //convert each firstore document from json -> list of posts
       final List<Post> allposts = postSnapshots.docs
-        .map((doc) => Post.fromJson(doc.data() as Map<String , dynamic>))
-        .toList();
+          .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
 
-        return allposts;
-    }
-    catch(e){
+      return allposts;
+    } catch (e) {
       throw Exception("Error fetching posts: $e");
     }
   }
 
   @override
-
-  Future<List<Post>> fetchPostsByUserId(String userId) async{
-    // TODO: implement fetchPostsByUserId
-    try{
+  Future<List<Post>> fetchPostsByUserId(String userId) async {
+    try {
       //fetch post snapshots with this uid
-      final postSnapshots = await postCollection.where("userId", isEqualTo: userId).get();
+      final postSnapshots =
+          await postCollection.where("userId", isEqualTo: userId).get();
 
       //convert firstore document from json -> list of posts
       final userPosts = postSnapshots.docs
-        .map((doc) => Post.fromJson(doc.data() as Map<String , dynamic>))
-        .toList();
-      
+          .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+
       return userPosts;
-    }
-    catch(e){
+    } catch (e) {
       throw Exception("Error fetching posts: $e");
     }
   }
-
 }

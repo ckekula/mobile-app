@@ -10,16 +10,16 @@ import 'package:mobile_app/features/profile/domain/entities/user_profile.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_cubits.dart';
 import 'package:mobile_app/features/profile/presentation/cubits/user_profile_states.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditUserProfilePage extends StatefulWidget {
   final UserProfile user;
 
-  const EditProfilePage({super.key, required this.user});
+  const EditUserProfilePage({super.key, required this.user});
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<EditUserProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _EditProfilePageState extends State<EditUserProfilePage> {
   //mobile image pick
   PlatformFile? imagePickedFile;
 
@@ -36,16 +36,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
       withData: kIsWeb,
     );
 
-      if(result != null) {
-        setState(() {
-          imagePickedFile = result.files.first;
+    if (result != null) {
+      setState(() {
+        imagePickedFile = result.files.first;
 
-          if(kIsWeb){
-            webImage = imagePickedFile!.bytes;
-          }
-        });
-
-      }
+        if (kIsWeb) {
+          webImage = imagePickedFile!.bytes;
+        }
+      });
+    }
   }
 
   // update profile button pressed
@@ -139,18 +138,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 clipBehavior: Clip.hardEdge,
                 child:
-                //display select image mobile
-                (!kIsWeb && imagePickedFile != null)
-                ?
-                Image.file(File(imagePickedFile!.path!),
-                fit: BoxFit.cover,)
-                :
+                    //display select image mobile
+                    (!kIsWeb && imagePickedFile != null)
+                        ? Image.file(
+                            File(imagePickedFile!.path!),
+                            fit: BoxFit.cover,
+                          )
+                        :
 
-                //display selected image for web
-                (kIsWeb && imagePickedFile != null)
-                    ?
-                    Image.memory(webImage!)
-                    :
+                        //display selected image for web
+                        (kIsWeb && imagePickedFile != null)
+                            ? Image.memory(webImage!)
+                            :
 
                             //no image select -> display existing image
                             CachedNetworkImage(

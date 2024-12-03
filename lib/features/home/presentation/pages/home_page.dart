@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/features/home/presentation/components/my_drawer.dart';
@@ -16,9 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   //post cubit
-  late final postCubit = context.read<PostCubit>(); 
+  late final postCubit = context.read<PostCubit>();
 
   //on startup
   @override
@@ -27,7 +25,6 @@ class _HomePageState extends State<HomePage> {
 
     //fetch all the posts
     fetchAllPosts();
-
   }
 
   void fetchAllPosts() {
@@ -39,48 +36,49 @@ class _HomePageState extends State<HomePage> {
     fetchAllPosts();
   }
 
-
   // BUILD UI
   @override
   Widget build(BuildContext context) {
     // SCAFFOLD
     return Scaffold(
-      // APP BAR
-      appBar: AppBar(
-        title: const Text("Home"),
-        centerTitle: true,
-        foregroundColor: Theme.of(context).colorScheme.primary,
-        actions: [
-          //upload new post button
-          IconButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const UploadPostPage(),
-              )), 
-            icon: const Icon(Icons.add),
-          )
-        ],
-      ),
+        // APP BAR
+        appBar: AppBar(
+          title: const Text("Home"),
+          centerTitle: true,
+          foregroundColor: Theme.of(context).colorScheme.primary,
+          actions: [
+            //upload new post button
+            IconButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UploadPostPage(),
+                  )),
+              icon: const Icon(Icons.add),
+            )
+          ],
+        ),
 
-      //Drawer
-      drawer: const MyDrawer(),
+        //Drawer
+        drawer: const MyDrawer(),
 
-      // BODY
-      body: BlocBuilder<PostCubit, PostState>(
-        builder: (context, state) {
+        // BODY
+        body: BlocBuilder<PostCubit, PostState>(builder: (context, state) {
           //loading..
-          if(state is PostsLoading && state is PostsUploading){
-            return const Center(child: CircularProgressIndicator(),);
+          if (state is PostsLoading && state is PostsUploading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           //loaded
-          else if(state is PostsLoaded){
+          else if (state is PostsLoaded) {
             final allPosts = state.posts;
 
-            if(allPosts.isEmpty){
+            if (allPosts.isEmpty) {
               return const Center(
-                child: Text("No posts yet"),);
+                child: Text("No posts yet"),
+              );
             }
             return ListView.builder(
               itemCount: allPosts.length,
@@ -91,20 +89,20 @@ class _HomePageState extends State<HomePage> {
                 //image
                 return PostTile(
                   post: post,
-                  onDeletePressed: () => deletePost(post),);
+                  onDeletePressed: () => deletePost(post),
+                );
               },
             );
           }
 
           //error
-          else if(state is PostsError){
-            return Center(child: Text(state.message),);
+          else if (state is PostsError) {
+            return Center(
+              child: Text(state.message),
+            );
+          } else {
+            return const SizedBox();
           }
-          else{
-            return SizedBox();
-          }
-        }
-      )
-    );
+        }));
   }
 }
