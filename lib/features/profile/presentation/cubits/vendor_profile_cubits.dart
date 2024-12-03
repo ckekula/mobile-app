@@ -21,7 +21,7 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       if (vendor != null) {
         emit(VendorProfileLoaded(vendor));
       } else {
-        emit(VendorProfileError("User not found"));
+        emit(VendorProfileError("Vendor not found"));
       }
     } catch (e) {
       emit(VendorProfileError(e.toString()));
@@ -38,10 +38,10 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
 
     try {
       // feth the current user
-      final currentUser = await profileRepo.fetchVendorProfile(uid);
+      final currentVendor = await profileRepo.fetchVendorProfile(uid);
 
-      if (currentUser == null) {
-        emit(VendorProfileError("Failed to fetch user for profle update"));
+      if (currentVendor == null) {
+        emit(VendorProfileError("Failed to fetch vendor for profle update"));
         return;
       }
 
@@ -70,9 +70,9 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       }
 
       // update new profile
-      final updatedVendorProfile = currentUser.copyWith(
-        newBio: newBio ?? currentUser.bio,
-        newProfileImageUrl: imageDownloadUrl ?? currentUser.profileImageUrl,
+      final updatedVendorProfile = currentVendor.copyWith(
+        newBio: newBio ?? currentVendor.bio,
+        newProfileImageUrl: imageDownloadUrl ?? currentVendor.profileImageUrl,
       );
 
       // update in repo

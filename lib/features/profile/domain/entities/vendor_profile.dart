@@ -50,7 +50,7 @@ class VendorProfile extends AppVendor {
       name: json['name'],
       bio: json['bio'] ?? '',
       profileImageUrl: json['profileImageUrl'] ?? '',
-      followers: List<String>.from(json['followers']),
+      followers: List<String>.from(json['followers'] ?? []),
     );
   }
 }

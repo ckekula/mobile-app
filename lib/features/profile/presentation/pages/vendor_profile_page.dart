@@ -43,7 +43,7 @@ class _ProfilePageState extends State<VendorProfilePage> {
   void followButtonPressed() {
     final profileState = profileCubit.state;
     if (profileState is! VendorProfileLoaded) {
-      return; // return if profile is mnot loaded
+      return; // return if profile is not loaded
     }
 
     final vendorProfile = profileState.vendorProfile;

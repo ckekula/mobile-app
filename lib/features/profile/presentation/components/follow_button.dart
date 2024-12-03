@@ -29,7 +29,7 @@ class FollowButton extends StatelessWidget {
             onPressed: onPressed,
 
             // padding inside
-            padding: EdgeInsets.all(25),
+            padding: const EdgeInsets.all(25),
 
             // color
             color: isFollowing

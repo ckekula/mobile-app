@@ -58,7 +58,7 @@ class FirebaseProfileRepo implements ProfileRepo {
     try {
       // get user document from firestore
       final userDoc =
-          await firebaseFirestore.collection('users').doc(uid).get();
+          await firebaseFirestore.collection('vendors').doc(uid).get();
 
       if (userDoc.exists) {
         final userData = userDoc.data();
@@ -77,6 +77,7 @@ class FirebaseProfileRepo implements ProfileRepo {
 
       return null;
     } catch (e) {
+      print("Error fetching vendor profile: $e");
       return null;
     }
   }
@@ -86,7 +87,7 @@ class FirebaseProfileRepo implements ProfileRepo {
     try {
       // convert updated profile -> json to store in firebase
       await firebaseFirestore
-          .collection('users')
+          .collection('vendors')
           .doc(updatedVendorProfile.uid)
           .update({
         'bio': updatedVendorProfile.bio,
