@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
 import 'package:mobile_app/features/post/domain/repos/post_repo.dart';
+import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 
 class FirebasePostRepo implements PostRepo {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -93,5 +95,57 @@ class FirebasePostRepo implements PostRepo {
       throw Exception("Error liking post: $e");
     }
   }
-}
 
+  @override
+  Future<void> addComment(String postId, Comment comment) async {
+    try{
+      //get the post document from firestore
+      final postDoc =await postCollection.doc(postId).get();
+      if(postDoc.exists){
+        //convert json object -> post
+        final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+        //add the new comment
+        post.comments.add(comment);
+
+        //update the post document in firstore
+        await postCollection.doc(postId).update({
+          'comments':post.comments.map((comment) => comment.toJson()).toList(),
+        });
+      }else{
+        throw Exception("Post not found");
+      }
+    }
+    catch(e){
+      throw Exception("Error adding comment: $e");
+    }
+  }
+
+// delete comment
+@override
+  Future<void> deleteComment(String postId, String commentId) async{
+    try{
+      //get the post document from firestore
+      final postDoc =await postCollection.doc(postId).get();
+      if(postDoc.exists){
+        //convert json object -> post
+        final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+        //add the new comment
+        post.comments.removeWhere((comment) => comment.id == commentId);
+
+        //update the post document in firstore
+        await postCollection.doc(postId).update({
+          'comments':post.comments.map((comment) => comment.toJson()).toList(),
+        });
+      }else{
+        throw Exception("Post not found");
+      }
+    }
+    catch(e){
+      throw Exception("Error deleting comment: $e");
+    }    
+  }
+
+
+}
