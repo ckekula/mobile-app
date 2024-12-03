@@ -86,4 +86,13 @@ class VendorProfileCubit extends Cubit<VendorProfileState> {
       emit(VendorProfileError("Error updating profile: $e"));
     }
   }
+
+  // toggle follow/unfollow
+  Future<void> toggleFollow(String currentUserId, String targetUserId) async {
+    try {
+      await profileRepo.toggleFollow(currentUserId, targetUserId);
+    } catch (e) {
+      emit(VendorProfileError("Error toggling follow: $e"));
+    }
+  }
 }
