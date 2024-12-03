@@ -1,5 +1,5 @@
 /* 
-App-root level
+User App
 
 uses a [MultiBlocProvider] to provide the following [Bloc]s to its subtree:
 
@@ -37,10 +37,8 @@ class UserApp extends StatelessWidget {
   final firebaseAuthRepo = FirebaseAuthRepo();
   final firebaseProfileRepo = FirebaseProfileRepo();
   final firebaseStorageRepo = FirebaseStorageRepo();
-  final firebaseSearchRepo = FirebaseSearchRepo();
-
-  //post repo
   final firebasePostRepo = FirebasePostRepo();
+  final firebaseSearchRepo = FirebaseSearchRepo();
 
   final VoidCallback switchToVendorApp;
 
