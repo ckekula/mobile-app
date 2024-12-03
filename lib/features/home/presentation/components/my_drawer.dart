@@ -7,6 +7,8 @@ import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_states.
 import 'package:mobile_app/features/home/presentation/components/my_drawer_tile.dart';
 import 'package:mobile_app/features/profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_app/features/profile/presentation/pages/vendor_profile_page.dart';
+import 'package:mobile_app/features/search/presentation/pages/search_page.dart';
+import 'package:mobile_app/features/settings/pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -84,14 +86,20 @@ class MyDrawer extends StatelessWidget {
               MyDrawerTile(
                 title: "S E A R C H",
                 icon: Icons.search,
-                onTap: () {},
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SearchPage())),
               ),
 
               // setting tile
               MyDrawerTile(
                 title: "S E T T I N G S",
                 icon: Icons.settings,
-                onTap: () {},
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                ),
               ),
 
               const Spacer(),
