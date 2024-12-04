@@ -8,6 +8,7 @@ import 'package:mobile_app/features/auth/presentation/cubits/auth_cubits.dart';
 import 'package:mobile_app/features/auth/presentation/cubits/vendor_auth_cubits.dart';
 import 'package:mobile_app/features/post/domain/entities/comment.dart';
 import 'package:mobile_app/features/post/domain/entities/post.dart';
+import 'package:mobile_app/features/post/presentation/components/comment_tile.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:mobile_app/features/post/presentation/cubits/post_states.dart';
 import 'package:mobile_app/features/profile/domain/entities/vendor_profile.dart';
@@ -393,19 +394,7 @@ class _PostTileState extends State<PostTile> {
                       final comment = post.comments[index];
 
                       //comment tile UI
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Row(children: [
-                          //name
-                          Text(
-                            comment.userName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(width: 10),
-                          // comment text
-                          Text(comment.text),
-                        ]),
-                      );
+                      return CommentTile(comment: comment);
                     });
               }
             }
